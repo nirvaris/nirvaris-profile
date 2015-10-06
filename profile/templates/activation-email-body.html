@@ -1,0 +1,5 @@
+{% load i18n %}
+
+{% trans 'Please click here to activate your account' %}
+
+<a href="{{ site_url }}{% url 'activation' activation_token %}">click here</a>

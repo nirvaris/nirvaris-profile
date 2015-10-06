@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load form_style %}
+
+{% include "menu.html" %}
+
+
+{% include "messages.html" %}
+{% include "logged-user.html" %}
+
+<form method="POST" >{% csrf_token %}
+
+{{ form|form_style }}
+
+{# Translators: The register button on the register form. #}
+<input type="submit" value="{% trans 'Register' %}">
+
+</form>
+

@@ -1,0 +1,7 @@
+{% load i18n %}
+
+{% if user.is_authenticated %}
+<h>You are logged in as {{ user.email }}</h>
+{% else %}
+<h>You are not logged</h>
+{% endif %}

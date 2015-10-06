@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load form_style %}
+
+{% include "menu.html" %}
+
+
+{% include "messages.html" %}
+{% include "logged-user.html" %}
+
+<form method="POST" >{% csrf_token %}
+
+{{ form|form_style}}
+
+{# Translators: The re-send button on the re-send activation email form. #}
+<input type="submit" value="{% trans 'Re-Send Activation E-Mail' %}">
+
+</form>
+
