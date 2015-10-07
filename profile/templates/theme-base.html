@@ -1,0 +1,35 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	{% block item-meta-tag %}
+	{% endblock %}
+
+	<link rel="icon" href="{% static 'image/fav.png' %}">
+    <title>{% block head_title %}Nirvaris Pages{% endblock %}</title>
+    {% include 'theme-head-css.html' %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		{% include 'theme-navbar.html' %}
+	</nav>
+	<!-- End .navbar -->
+		
+	<section class="content">
+		<div class="container">
+			{% block content %}
+			{% endblock %}
+		</div>
+	</section>
+	<!-- End .content -->
+    
+	{% include 'theme-footer.html' %}
+	<!-- End footer -->
+
+	{% include 'theme-footer-javascript.html' %}
+	<!-- Scripts -->
+</body>
+</html>
