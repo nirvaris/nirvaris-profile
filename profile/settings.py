@@ -29,6 +29,13 @@ SITE_URL = 'http://localhost:8000'
 
 ALLOWED_HOSTS = ['*']
 
+# SMTP settings
+EMAIL_HOST = 'mail.nirvaris.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'support@nirvaris.com'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+EMAIL_FROM = 'support@weavetool.com'
 
 # Application definition
 
