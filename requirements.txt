@@ -1,0 +1,5 @@
+git+https://github.com/nirvaris/nirvaris-style-snippet
+Django==1.8.3
+pycrypto==2.6.1
+selenium==2.47.1
+wheel==0.24.0
