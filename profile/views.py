@@ -23,13 +23,14 @@ from .forms import RegisterForm, ResendActivationEmailForm, LoginForm, ForgotPas
 # Create your views here.
 
 AFTER_LOGIN_URL = 'profile-dashboard'
+LOGIN_URL = 'login'
 
 if hasattr(settings, 'PROFILE_AFTER_LOGIN_URL'):
     if settings.PROFILE_AFTER_LOGIN_URL:
         AFTER_LOGIN_URL = settings.PROFILE_AFTER_LOGIN_URL
 
 if not hasattr(settings, 'LOGIN_URL'):
-    settings.LOGIN_URL = 'login'
+    LOGIN_URL = settings.LOGIN_URL
     
 MAX_TOKEN_DAYS = 10
 if hasattr(settings, 'PROFILE_MAX_TOKEN_DAYS'):
