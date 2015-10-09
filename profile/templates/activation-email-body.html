@@ -1,5 +1,64 @@
 {% load i18n %}
-
-{% trans 'Please click here to activate your account' %}
-
-<a href="{{ site_url }}{% url 'activation' activation_token %}">click here</a>
+<div style="background-color:#f2f2f2">
+	<center>
+		<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" style="background-color:#f2f2f2">
+			<tbody><tr>
+				<td align="center" valign="top" style="padding:40px 20px">
+					<table border="0" cellpadding="0" cellspacing="0" style="width:600px">
+						<tbody><tr>
+							<td align="center" valign="top" style="padding-bottom:30px">
+								<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#ffffff;border-collapse:separate!important;border-radius:4px">
+									<tbody><tr>
+										<td align="center" valign="top" style="padding-top:40px;padding-right:40px;padding-bottom:0;padding-left:40px">
+											<table border="0" cellpadding="0" cellspacing="0" width="100%">
+												<tbody><tr>
+													<td valign="middle" style="color:#606060;font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:150%;text-align:left">
+														<h1 style="color:#606060!important;font-family:Helvetica,Arial,sans-serif;font-size:26px;font-weight:bold;letter-spacing:-1px;line-height:115%;margin:0;padding:0;text-align:center">{% trans 'Instructions to account activation' %}</h1>
+													</td>
+												</tr>
+											</tbody></table>
+										</td>
+									</tr>
+									<tr>
+										<td align="center" valign="top" style="color:#606060;font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:150%;padding-top:40px;padding-right:40px;padding-bottom:20px;padding-left:40px;text-align:left">
+											{% trans 'Your account is almost ready. To complete your activation click on the link bellow.' %}
+										</td>
+									</tr>
+									<tr>
+										<td align="center" valign="middle" style="padding-right:40px;padding-bottom:40px;padding-left:40px">
+											<table border="0" cellpadding="0" cellspacing="0" style="background-color:#000;border-collapse:separate!important;border-radius:3px">
+												<tbody><tr>
+													<td align="center" valign="middle" style="color:#ffffff;font-family:Helvetica,Arial,sans-serif;font-size:15px;font-weight:bold;line-height:100%;padding-top:18px;padding-right:15px;padding-bottom:15px;padding-left:15px">
+														<a href="{{ site_url }}{% url 'activation' activation_token %}" style="color:#ffffff;text-decoration:none" target="_blank">{% trans 'Activate your account' %}</a>
+													</td>
+												</tr>
+											</tbody></table>
+										</td>
+									</tr>
+								</tbody></table>
+							</td>
+						</tr>
+						<tr>
+							<td align="center" valign="top">
+								<table border="0" cellpadding="0" cellspacing="0" width="100%">
+									<tbody><tr>
+										<td align="center" valign="top" style="color:#606060;font-family:Helvetica,Arial,sans-serif;font-size:13px;line-height:125%">
+											© 2015 Nirvaris, All Rights Reserved.
+											<br>
+											<a href="#" style="color:#606060!important;text-decoration:none!important"><span style="color:#606060!important">Jl. Perhubungan IV/25 • Pondok Betung • Tangerang 15224  • Indonesia</span></a>
+										</td>
+									</tr>
+									<tr>
+										<td align="center" valign="top" style="padding-top:30px">
+											<a href="#" title="MailChimp" style="text-decoration:none" target="_blank"><img src="{% static 'image/logo-nirvaris.png' %}" height="25" width="100" style="border:0;outline:none;text-decoration:none"></a>
+										</td>
+									</tr>
+								</tbody></table>
+							</td>
+						</tr>
+					</tbody></table>
+				</td>
+			</tr>
+		</tbody></table>
+	</center>
+</div>

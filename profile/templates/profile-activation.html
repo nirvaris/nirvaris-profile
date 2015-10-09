@@ -1,8 +1,16 @@
+{% extends "theme-base.html" %}
 {% load i18n %}
+{% load form_style %}
+{% load messages_style %}
 
-{% include "menu.html" %}
+{% block head_title %}{{ profile.title }}{% endblock %}
 
-
-{% include "messages.html" %}
-{% include "logged-user.html" %}
-
+{% block content %}
+<div class="row">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		{{ messages|messages_style }}
+	</div>
+	<div class="col-md-3"></div>
+</div>
+{% endblock %}

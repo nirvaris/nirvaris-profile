@@ -1,17 +1,23 @@
+{% extends "theme-base.html" %}
 {% load i18n %}
 {% load form_style %}
+{% load messages_style %}
 
-{% include "menu.html" %}
+{% block head_title %}{{ profile.title }}{% endblock %}
 
-{% include "messages.html" %}
-{% include "logged-user.html" %}
-
-<form method="POST" >{% csrf_token %}
-
-{{ form|form_style}}
-
-{# Translators: The submit button on the change password form. #}
-<input type="submit" value="{% trans 'Change password' %}">
-
-</form>
-
+{% block content %}
+<div class="row">
+	<div class="col-md-4"></div>
+	<div class="col-md-4">
+		<form method="POST" >{% csrf_token %}
+			{{ messages|messages_style }}
+			{{ form|form_style }}
+			<div class="form-group">
+				{# Translators: The save button on the change user details form. #}
+				<input class="btn btn-primary btn-lg btn-block" type="submit" value="{% trans 'Save' %}">
+			</div>
+		</form>
+	</div>
+	<div class="col-md-4"></div>
+</div>
+{% endblock %}

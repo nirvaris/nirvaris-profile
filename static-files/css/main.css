@@ -1,0 +1,34 @@
+/* Connte section
+-------------------------------------------------- */
+body > .content > .container {
+  padding: 60px 15px 0;
+}
+
+.navbar-brand {
+    padding-top: 12px;
+}
+.navbar-brand img {
+    width: 110px;
+}
+
+/********************************************************************/
+/*  FORMS  */
+/********************************************************************/
+/* required */
+.form-group.required label:after {
+    content: '  *';
+    color: #A94442;
+}
+/* error list */
+.form-error-list {
+    margin: 2px 0 3px;
+    padding: 0;
+    list-style-type: none;
+    -webkit-transition: all .3s ease-in;
+}
+.form-error-list li {
+    color: #A94442;
+}
+.has-error .help-block {
+    color: #737373;
+}
