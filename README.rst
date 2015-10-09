@@ -15,7 +15,7 @@ pip install git+https://github.com/nirvaris/nirvaris-profile
 
     INSTALLED_APPS = (
         ...
-        'profile',
+        'n_profile',
     )
 
 2. You have to run makemigrations and migrate, as it uses Django authentication
