@@ -1,6 +1,5 @@
 include LICENSE
 include README.rst
-exclude settings.py wsgi.py
 recursive-include blog/migrations *
 recursive-include blog/templates *
 recursive-include docs *
