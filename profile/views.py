@@ -137,6 +137,8 @@ class LoginView(FormView):
         if request.user.is_authenticated():
             return redirect(self.success_url)
 
+        if 'next' in request.GET:
+            messages.info(self.request,_('Ooops! You have to login to access this page!'))
         return super(LoginView,self).get(request)
  
     def form_valid(self, form):
