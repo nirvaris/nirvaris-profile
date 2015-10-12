@@ -1,3 +1,7 @@
+#app development things
+settings.py
+wsgi.py
+
 # eclipse things
 .settings/
 .pydevproject

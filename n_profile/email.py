@@ -1,3 +1,4 @@
+import pdb
 import logging
 from datetime import date
 
@@ -25,6 +26,8 @@ def send_new_password(request, user, new_password):
     msg.send()
     
 def send_activation_email(request, user):
+    
+    pdb.set_trace()
     
     dic_for_context = {}
     dic_for_context['user'] = user

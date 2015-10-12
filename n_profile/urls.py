@@ -1,11 +1,12 @@
-
+from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from .views import RegisterView, ResendActivationEmailView, ActivationView, LoginView, DashboardView, ForgotPasswordView, LogoutView, ChangeUserPasswordView, ChangeUserDetailsView
 
 
 urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^register$', RegisterView.as_view(), name='register'),
     url(r'^resend-activation-email$', ResendActivationEmailView.as_view(), name='resend-activation-email'),
     url(r'^activation/(?P<token>.*)', ActivationView.as_view(), name='activation'),
