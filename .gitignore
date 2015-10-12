@@ -1,6 +1,7 @@
 #app development things
 settings.py
 wsgi.py
+manage.py
 
 # eclipse things
 .settings/
