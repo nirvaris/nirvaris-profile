@@ -49,7 +49,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'stylesnippet',
-    'profile',
+    'n_profile',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -63,7 +63,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'profile.urls'
+ROOT_URLCONF = 'n_profile.urls'
 
 TEMPLATES = [
     {
@@ -81,7 +81,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'profile.wsgi.application'
+WSGI_APPLICATION = 'n_profile.wsgi.application'
 
 
 # Database

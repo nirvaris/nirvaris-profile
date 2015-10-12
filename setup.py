@@ -9,11 +9,11 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='nirvaris-profile',
-    version='0.1',
-    packages=['profile'],
+    version='0.6',
+    packages=['n_profile'],
     include_package_data=True,
     license='MIT License',  # example license
-    description='A simple Django app useing django auth with custom UI',
+    description='A simple Django app using django auth with custom UI',
     long_description=README,
     url='https://github.com/nirvaris/nirvaris-profile',
     author='Juliano Binder',
