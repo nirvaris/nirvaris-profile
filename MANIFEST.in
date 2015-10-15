@@ -2,4 +2,5 @@ include LICENSE
 include README.rst
 recursive-include n_profile/migrations *
 recursive-include n_profile/templates *
+recursive-include n_profile/static *
 recursive-include docs *
