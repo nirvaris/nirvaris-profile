@@ -1,4 +1,4 @@
-import re
+import re, pdb
 
 from datetime import date, timedelta
 
@@ -31,7 +31,7 @@ class ProfileViewsTestCase(TestCase):
         
         self.assertEquals(response.status_code, 302,'Logout page should redirect to login')
         
-        self.assertIn(reverse('login'),response['location'])      
+        self.assertIn(response['location'], reverse('login'))      
 
         response = c.get(reverse('login'))
         
@@ -55,7 +55,7 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertEquals(response.status_code,302,'Should redirect back')
 
-        self.assertIn(reverse('change-user-details'), response['Location'],'Should redirect to back')
+        self.assertIn(response['Location'], reverse('change-user-details'),'Should redirect to back')
         
         self.assertTrue(User.objects.filter(username='jack_changed').exists(),'User was not registered')
 
@@ -94,7 +94,7 @@ class ProfileViewsTestCase(TestCase):
         self.assertTrue(c.login(username='jack_changed',password='pass'),'Should login with the old credentials as did not change the username') 
         
     def test_change_password(self):
-
+        
         jack_user = create_user_jack(True)
         
         c = self.c
@@ -106,10 +106,10 @@ class ProfileViewsTestCase(TestCase):
             'new_password': 'password2', 
             'confirm_new_password':'password2', 
         })
-
+        
         self.assertEquals(response.status_code,302,'Should redirect to logout')
 
-        self.assertTrue(reverse('logout') in response['Location'],'Should redirect to logout')
+        self.assertTrue(response['Location'] in reverse('logout'),'Should redirect to logout')
         
         self.assertTrue(c.login(username=jack_user.username,password='password2'),'Must login with the new credentials')      
         
@@ -328,7 +328,7 @@ class ProfileViewsTestCase(TestCase):
                 
         self.assertEquals(response.status_code, 302,'Should redirect back')
         
-        self.assertTrue(reverse('forgot-password') in response['Location'])
+        self.assertTrue(response['Location'] in reverse('forgot-password'))
         
         self.assertEqual(len(mail.outbox), 1,'No forgot password email sent')
 
@@ -408,7 +408,7 @@ class ProfileViewsTestCase(TestCase):
                 
         self.assertEquals(response.status_code,302,'Page not redirected')
         
-        self.assertTrue(reverse('resend-activation-email') in response['Location'])
+        self.assertTrue(response['Location'] in reverse('resend-activation-email'))
         
         self.assertTrue(User.objects.filter(username='jack').exists(),'User was not registered')
 

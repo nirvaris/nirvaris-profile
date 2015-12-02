@@ -1,4 +1,5 @@
 #app development things
+dev-settings.py
 settings.py
 wsgi.py
 manage.py

@@ -9,7 +9,7 @@
 <div class="row">
 	<div class="col-md-4"></div>
 	<div class="col-md-4">
-		<form method="POST" >{% csrf_token %}
+		<form ng-non-bindable method="POST" >{% csrf_token %}
 			{{ messages|messages_style }}
 			{{ form|form_style }}
 			<div class="form-group">

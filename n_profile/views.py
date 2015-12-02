@@ -1,3 +1,5 @@
+import pdb
+
 from datetime import date, timedelta
 
 from django.contrib.auth import login, logout, authenticate
@@ -8,12 +10,9 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.generic.base import View, TemplateView, RedirectView
 from django.views.generic.edit import FormView
-
-
 
 from .crypto import decrypt
 from .email import send_activation_email, send_new_password
@@ -182,8 +181,9 @@ class ActivationView(View):
     template_name = 'profile-activation.html'
 
     def get(self, request, token):
+        #pdb.set_trace()
         logout(request)
-        request_context = RequestContext(request)
+
         try:
             msg = decrypt(token).split(',')
         
@@ -192,12 +192,12 @@ class ActivationView(View):
 
         except:
             messages.error(request, _('There is a problem with your activation key.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
-            return render_to_response(self.template_name, request_context)
+            return render_to_response(self.template_name)
         
         if (date.today() - dt) > timedelta (days=MAX_TOKEN_DAYS):
             # Translators: Error message when the user click on the activation link or his e-mail and it has expired
             messages.info(request, _('Your activation has expired.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
-            return render_to_response(self.template_name, request_context)
+            return render_to_response(self.template_name)
 
         try:
             
@@ -218,7 +218,7 @@ class ActivationView(View):
             # Translators: Error message at the re-send activation email form when the email address is not found
             messages.error(self.request,_('The email address was not found.\n\rPlease, go to <a href="%s">register</a>') % reverse('register'))
 
-        return render_to_response(self.template_name, request_context)
+        return render_to_response(self.template_name)
 
 class ResendActivationEmailView(FormView):
     template_name = 'resend-activation-email.html'

@@ -1,6 +1,10 @@
 git+https://github.com/nirvaris/nirvaris-style-snippet
 git+https://github.com/nirvaris/nirvaris-theme-default
-Django==1.8.3
+Django==1.9
+django-smtp-ssl==1.0
+nirvaris-style-snippet==0.805
+nirvaris-theme-default==0.204
 pycrypto==2.6.1
-selenium==2.47.1
-wheel==0.24.0
+selenium==2.48.0
+wheel==0.26.0
+
