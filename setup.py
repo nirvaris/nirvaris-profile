@@ -30,14 +30,5 @@ setup(
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
     ],
-    dependency_links=[
-        'git+https://github.com/nirvaris/nirvaris-theme-default',
-        'git+https://github.com/nirvaris/nirvaris-style-snippet',
-        
-    ],
-    install_requires=[
-        'nirvaris-theme-default',
-        'nirvaris-style-snippet',
-    ],
 
 )
