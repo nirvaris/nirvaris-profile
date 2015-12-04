@@ -33,7 +33,7 @@ pip install git+https://github.com/nirvaris/nirvaris-profile
     )
 ```
 
-- As it sends emails for account activation and forgot password, you have to setup your SMTP details in your settings.[Django docs for sending emails](https://docs.djangoproject.com/en/1.9/topics/email/)
+- As it sends emails for account activation and forgot password, you have to setup your SMTP details in your settings. [Django docs for sending emails](https://docs.djangoproject.com/en/1.9/topics/email/)
 
 ```
 EMAIL_HOST = ''
@@ -62,11 +62,11 @@ url(r'^profile/', include('n_profile.urls')),
 <your-project-url>/profile/register
 <your-project-url>/profile/resend-activation-email
 <your-project-url>/profile/activation  #this one expect a parameter P whith the activation token
-<your-project-url>profile/login
-<your-project-url>profile/forgot-password
-<your-project-url>profile/profile-dashboard
-<your-project-url>profile/logout
-<your-project-url>profile/change-password
-<your-project-url>profile/change-user-details
+<your-project-url>/profile/login
+<your-project-url>/profile/forgot-password
+<your-project-url>/profile/profile-dashboard
+<your-project-url>/profile/logout
+<your-project-url>/profile/change-password
+<your-project-url>/profile/change-user-details
 ```
 
