@@ -9,19 +9,17 @@ It uses the follow dependeciesm from Nirvaris:
 - [Nirvaris Default Theme](https://github.com/nirvaris/nirvaris-theme-default)
 - [Nirvaris Style Snippet](https://github.com/nirvaris/nirvaris-theme-default)
 
-There is a re
 
 # Quick start
 -
 
 - Django admin must be installed, of course, and you have to run migrate. The app itself does not have any models.
 
-- You can use pip from git to install it. The dependencies are not in PyPi.
+- You can use pip from git to install it. A requirements file is provided with some dependencies.
 
 ```
 pip install git+https://github.com/nirvaris/nirvaris-profile
-pip install git+https://github.com/nirvaris/nirvaris-theme-default
-pip install git+https://github.com/nirvaris/nirvaris-style-snippet
+
 ```
 
 - Add the _n\_profile_, and its dependencies, to your INSTALLED_APPS:
@@ -35,7 +33,7 @@ pip install git+https://github.com/nirvaris/nirvaris-style-snippet
     )
 ```
 
-- As it sends emails for activation and forgot password, you have to setup your SMTP details in your settings.[Django docs for sending emails](https://docs.djangoproject.com/en/1.9/topics/email/)
+- As it sends emails for account activation and forgot password, you have to setup your SMTP details in your settings.[Django docs for sending emails](https://docs.djangoproject.com/en/1.9/topics/email/)
 
 ```
 EMAIL_HOST = ''
@@ -45,9 +43,30 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 EMAIL_FROM = ''
 ```
+- There are a few variables to your settings.
 
+```
+SITE_URL = 'http://localhost:800' 
+AFTER_LOGIN_URL = 'profile-dashboard'
+LOGIN_URL = 'login'
+MAX_TOKEN_DAYS = 10 #The limit in days for the activation email to be expired
+```
 - you have to add the url to your urls file:
 
 ```
 url(r'^profile/', include('n_profile.urls')),
 ```
+- The app urls are:
+
+```
+<your-project-url>/profile/register
+<your-project-url>/profile/resend-activation-email
+<your-project-url>/profile/activation  #this one expect a parameter P whith the activation token
+<your-project-url>profile/login
+<your-project-url>profile/forgot-password
+<your-project-url>profile/profile-dashboard
+<your-project-url>profile/logout
+<your-project-url>profile/change-password
+<your-project-url>profile/change-user-details
+```
+
