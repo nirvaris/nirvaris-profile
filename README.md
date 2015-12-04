@@ -56,7 +56,7 @@ MAX_TOKEN_DAYS = 10 #The limit in days for the activation email to be expired
 ```
 url(r'^profile/', include('n_profile.urls')),
 ```
-- The app urls are:
+- The app's urls are:
 
 ```
 <your-project-url>/profile/register
