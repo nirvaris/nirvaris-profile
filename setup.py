@@ -9,7 +9,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='nirvaris-profile',
-    version='0.901',
+    version='0.902',
     packages=['n_profile'],
     include_package_data=True,
     license='MIT License',  # example license
@@ -31,8 +31,8 @@ setup(
         'Programming Language :: Python :: 3.3',
     ],
     dependency_links=[
-        'https://github.com/nirvaris/nirvaris-theme-default',
-        'https://github.com/nirvaris/nirvaris-style-snippet',
+        'git+https://github.com/nirvaris/nirvaris-theme-default',
+        'git+https://github.com/nirvaris/nirvaris-style-snippet',
         
     ]
 )
