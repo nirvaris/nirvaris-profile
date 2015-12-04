@@ -23,6 +23,7 @@ from .forms import RegisterForm, ResendActivationEmailForm, LoginForm, ForgotPas
 
 AFTER_LOGIN_URL = 'profile-dashboard'
 LOGIN_URL = 'login'
+MAX_TOKEN_DAYS = 10
 
 if hasattr(settings, 'PROFILE_AFTER_LOGIN_URL'):
     if settings.PROFILE_AFTER_LOGIN_URL:
@@ -31,7 +32,7 @@ if hasattr(settings, 'PROFILE_AFTER_LOGIN_URL'):
 if not hasattr(settings, 'LOGIN_URL'):
     LOGIN_URL = settings.LOGIN_URL
     
-MAX_TOKEN_DAYS = 10
+
 if hasattr(settings, 'PROFILE_MAX_TOKEN_DAYS'):
     if settings.PROFILE_MAX_TOKEN_DAYS:
         MAX_TOKEN_DAYS = settings.PROFILE_MAX_TOKEN_DAYS
