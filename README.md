@@ -9,13 +9,14 @@ It uses the follow dependeciesm from Nirvaris:
 - [Nirvaris Default Theme](https://github.com/nirvaris/nirvaris-theme-default)
 - [Nirvaris Style Snippet](https://github.com/nirvaris/nirvaris-theme-default)
 
+There is a re
 
 # Quick start
 -
 
 - Django admin must be installed, of course, and you have to run migrate. The app itself does not have any models.
 
-- You can use pip from git to install it:
+- You can use pip from git to install it. The dependencies are not in PyPi.
 
 ```
 pip install git+https://github.com/nirvaris/nirvaris-profile
