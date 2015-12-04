@@ -4,7 +4,7 @@
 A simple Django app to create a user profile using Django authentication.
 The app has custom interface for sign in, register, forgot password, activation, edit user details and so.
 
-It uses the follow dependeciesm from Nirvaris:
+It uses the follow dependecies from Nirvaris:
 
 - [Nirvaris Default Theme](https://github.com/nirvaris/nirvaris-theme-default)
 - [Nirvaris Style Snippet](https://github.com/nirvaris/nirvaris-theme-default)
