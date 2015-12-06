@@ -46,7 +46,7 @@ EMAIL_FROM = ''
 - There are a few variables to your settings.
 
 ```
-SITE_URL = 'http://localhost:800' 
+SITE_URL = 'http://localhost:8000/' 
 AFTER_LOGIN_URL = 'profile-dashboard'
 LOGIN_URL = 'login'
 MAX_TOKEN_DAYS = 10 #The limit in days for the activation email to be expired
@@ -61,7 +61,7 @@ url(r'^profile/', include('n_profile.urls')),
 ```
 <your-project-url>/profile/register
 <your-project-url>/profile/resend-activation-email
-<your-project-url>/profile/activation  #this one expect a parameter P whith the activation token
+<your-project-url>/profile/activation  #this one expect a parameter P with the activation token
 <your-project-url>/profile/login
 <your-project-url>/profile/forgot-password
 <your-project-url>/profile/profile-dashboard
