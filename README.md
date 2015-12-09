@@ -1,6 +1,6 @@
 
 # Nirvaris Profile
-
+-
 A simple Django app to create a user profile using Django authentication.
 The app has custom interface for sign in, register, forgot password, activation, edit user details and so.
 
