@@ -7,8 +7,6 @@ The app has custom interface for sign in, register, forgot password, activation,
 It uses the follow dependecies from Nirvaris:
 
 - [Nirvaris Default Theme](https://github.com/nirvaris/nirvaris-theme-default)
-- [Nirvaris Style Snippet](https://github.com/nirvaris/nirvaris-theme-default)
-
 
 # Quick start
 -
@@ -28,7 +26,6 @@ pip install git+https://github.com/nirvaris/nirvaris-profile
     INSTALLED_APPS = (
         ...
         'n_profile',
-        'stylesnippet',
         'themedefault',
     )
 ```
