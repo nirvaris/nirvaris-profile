@@ -20,8 +20,8 @@ HEADER = b'sc\x00\x00'
 SECRET_KEY = 'Sf34Drfv65yhRgtDD390Gfff--d'
 
 if hasattr(settings, 'PROFILE_SECRET_KEY'):
-    if settings.PROFILE_SECRET_KEY:
-        SECRET_KEY = settings.PROFILE_SECRET_KEY
+    if settings.NV_SECRET_KEY:
+        SECRET_KEY = settings.NV_SECRET_KEY
     
 
 HALF_BLOCK = AES.block_size*8//2

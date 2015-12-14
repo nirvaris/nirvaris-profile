@@ -10,7 +10,7 @@ from django.test import TestCase, Client
 from .commons import create_user_jack, create_user_james
 from ..crypto import decrypt, user_activation_token
 from ..forms import RegisterForm, LoginForm, ResendActivationEmailForm, ForgotPasswordForm, ChangeUserPasswordForm, ChangeUserDetailsForm
-from ..views import RegisterView, ResendActivationEmailView, ForgotPasswordView, LoginView, ChangeUserPasswordView, ChangeUserDetailsView, AFTER_LOGIN_URL, MAX_TOKEN_DAYS
+from ..views import RegisterView, ResendActivationEmailView, ForgotPasswordView, LoginView, ChangeUserPasswordView, ChangeUserDetailsView, NV_AFTER_LOGIN_URL, NV_MAX_TOKEN_DAYS
 
 class ProfileViewsTestCase(TestCase):
 
@@ -256,7 +256,7 @@ class ProfileViewsTestCase(TestCase):
         
         jack_user = create_user_jack()
         
-        due_date = date.today()-timedelta(days=int(MAX_TOKEN_DAYS)+1)
+        due_date = date.today()-timedelta(days=int(NV_MAX_TOKEN_DAYS)+1)
         
         activation_token = user_activation_token(jack_user.username, jack_user.email, due_date)
         
@@ -481,7 +481,7 @@ class ProfileViewsTestCase(TestCase):
         })
 
         self.assertEquals(response.status_code, 302,'Login page should redirect to AFTER_LOGIN_URL')      
-        self.assertIn(AFTER_LOGIN_URL,response['Location'])     
+        self.assertIn(NV_AFTER_LOGIN_URL,response['Location'])     
 
         
         # check login with email
@@ -492,7 +492,7 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertEquals(response.status_code, 302,'Login page should redirect to AFTER_LOGIN_URL')      
 
-        self.assertIn(AFTER_LOGIN_URL,response['Location'])
+        self.assertIn(NV_AFTER_LOGIN_URL,response['Location'])
 
 
     def test_get_resend_activation_view(self):

@@ -39,15 +39,23 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
-EMAIL_FROM = ''
 ```
-- There are a few variables to your settings.
+
+- Some Django variable used by the app. [Django docs](https://docs.djangoproject.com/en/1.9/ref/settings/#login-url)
 
 ```
-SITE_URL = 'http://localhost:8000/' 
-AFTER_LOGIN_URL = 'profile-dashboard'
 LOGIN_URL = 'login'
-MAX_TOKEN_DAYS = 10 #The limit in days for the activation email to be expired
+LOGOUT_URL = 'logout'
+```
+
+- Some Nirvaris specific variables to your settings
+
+```
+NV_SITE_URL = 'http://localhost:8000/' # used to assemble the activation link
+NV_AFTER_LOGIN_URL = 'profile-dashboard'
+NV_MAX_TOKEN_DAYS = 10 # The limit in days for the activation email to be expired
+NV_EMAIL_FROM = '' # The from email the app will send emails out
+NV_SECRET_KEY = '' # This key is used by the crypto module to encrypt and decrypt the activation token.
 ```
 - you have to add the url to your urls file:
 

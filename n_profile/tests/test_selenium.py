@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from .commons import create_user_jack
 from ..crypto import user_activation_token
-from ..views import MAX_TOKEN_DAYS, AFTER_LOGIN_URL
+from ..views import NV_MAX_TOKEN_DAYS, NV_AFTER_LOGIN_URL
 
 class SeleniumTestCase(LiveServerTestCase):
     
@@ -164,14 +164,14 @@ class SeleniumTestCase(LiveServerTestCase):
         
         jack_user = self._login(with_email=True)
         
-        self.assertIn(AFTER_LOGIN_URL, self.browser.current_url)
+        self.assertIn(NV_AFTER_LOGIN_URL, self.browser.current_url)
 
     def test_login_username(self):
         
         jack_user = self._login()
 
         #pdb.set_trace()
-        self.assertIn(AFTER_LOGIN_URL, self.browser.current_url)
+        self.assertIn(NV_AFTER_LOGIN_URL, self.browser.current_url)
         
 
     def test_forgot_password(self):
@@ -220,7 +220,7 @@ class SeleniumTestCase(LiveServerTestCase):
         
         jack_user = create_user_jack()
         
-        due_date = date.today()-timedelta(days=int(MAX_TOKEN_DAYS)+1)        
+        due_date = date.today()-timedelta(days=int(NV_MAX_TOKEN_DAYS)+1)        
         
         activation_token = user_activation_token(jack_user.username, jack_user.email, due_date)
         
@@ -242,8 +242,13 @@ class SeleniumTestCase(LiveServerTestCase):
         
         browser = self.browser
         
+        #pdb.set_trace()
+        
         browser.get(url_to_activate)
-
+        
+        
+        message_div = WebDriverWait(browser, 20).until( lambda browser: browser.find_element_by_xpath("//div"))
+        
         self.assertTrue(User.objects.get(username='jack').is_active)        
         
     def test_register(self):

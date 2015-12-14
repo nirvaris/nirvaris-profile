@@ -21,23 +21,21 @@ from .forms import RegisterForm, ResendActivationEmailForm, LoginForm, ForgotPas
 
 # Create your views here.
 
-AFTER_LOGIN_URL = 'profile-dashboard'
+NV_AFTER_LOGIN_URL = 'profile-dashboard'
 LOGIN_URL = 'login'
-MAX_TOKEN_DAYS = 10
+NV_MAX_TOKEN_DAYS = 10
 
-if hasattr(settings, 'PROFILE_AFTER_LOGIN_URL'):
-    if settings.PROFILE_AFTER_LOGIN_URL:
-        AFTER_LOGIN_URL = settings.PROFILE_AFTER_LOGIN_URL
-
+if hasattr(settings, 'NV_AFTER_LOGIN_URL'):
+    if settings.NV_AFTER_LOGIN_URL:
+        NV_AFTER_LOGIN_URL = settings.NV_AFTER_LOGIN_URL
+        
 if not hasattr(settings, 'LOGIN_URL'):
     LOGIN_URL = settings.LOGIN_URL
     
+if hasattr(settings, 'NV_MAX_TOKEN_DAYS'):
+    if settings.NV_MAX_TOKEN_DAYS:
+        NV_MAX_TOKEN_DAYS = settings.NV_MAX_TOKEN_DAYS
 
-if hasattr(settings, 'PROFILE_MAX_TOKEN_DAYS'):
-    if settings.PROFILE_MAX_TOKEN_DAYS:
-        MAX_TOKEN_DAYS = settings.PROFILE_MAX_TOKEN_DAYS
-
-    
 class ChangeUserDetailsView(FormView):
     
     template_name = 'change-user-details.html'
@@ -131,7 +129,7 @@ class DashboardView(TemplateView):
 class LoginView(FormView):
     template_name = 'login.html'
     form_class = LoginForm
-    success_url = AFTER_LOGIN_URL
+    success_url = NV_AFTER_LOGIN_URL
 
     def get(self, request):
         if request.user.is_authenticated():
@@ -195,7 +193,7 @@ class ActivationView(View):
             messages.error(request, _('There is a problem with your activation key.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
             return render_to_response(self.template_name)
         
-        if (date.today() - dt) > timedelta (days=MAX_TOKEN_DAYS):
+        if (date.today() - dt) > timedelta (days=NV_MAX_TOKEN_DAYS):
             # Translators: Error message when the user click on the activation link or his e-mail and it has expired
             messages.info(request, _('Your activation has expired.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
             return render_to_response(self.template_name)
@@ -211,8 +209,10 @@ class ActivationView(View):
                 user.is_active = True
                 user.save()
                 # Translators: Success message when the user click on the activation link on his email and his account is then activated
+                
                 messages.success(self.request,_('Thank you!\n\rYour account has been activated.\n\rPlease, go to <a href="%s">login</a>') % reverse('login'))
             else:
+                
                 messages.info(self.request,_('Your account was already activated.\n\rPlease, go to <a href="%s">login</a>') % reverse('login'))
             
         except User.DoesNotExist:
