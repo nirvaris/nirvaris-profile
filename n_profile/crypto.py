@@ -22,12 +22,16 @@ SECRET_KEY = 'Sf34Drfv65yhRgtDD390Gfff--d'
 if hasattr(settings, 'PROFILE_SECRET_KEY'):
     if settings.NV_SECRET_KEY:
         SECRET_KEY = settings.NV_SECRET_KEY
-    
+
 
 HALF_BLOCK = AES.block_size*8//2
 
 assert HALF_BLOCK <= SALT_LEN
 
+def user_invitation_token(email, due_date):
+    msg = 'invite,' + email + ',' + due_date.strftime("%Y-%m-%d")
+    return encrypt(msg)
+    
 def user_activation_token(username, email, due_date):
     msg = username + ',' + email + ',' + due_date.strftime("%Y-%m-%d")
     return encrypt(msg)

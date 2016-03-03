@@ -1,0 +1,1 @@
+{% load i18n %}{# Translators: Subject of the invitation email #}{% trans 'You were invite to be a Teacher at My:Method' %}

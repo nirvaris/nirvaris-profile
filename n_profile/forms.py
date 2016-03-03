@@ -4,11 +4,13 @@ from django.contrib.auth.models import User
 from django.forms import Form, ModelForm, CharField, PasswordInput, EmailField, TextInput, HiddenInput
 from django.utils.translation import ugettext as _
 
+class InviteUserForm(Form):
+    email = EmailField(required=True, label=_('E-mail address'))
 
 class ChangeUserDetailsForm(ModelForm):
     current_password = CharField(required=True, label=_('Type your Password'), max_length=30, widget=PasswordInput())
     name = CharField(required=True, label=_('Name'), max_length=200)
-    
+
     class Meta:
         model = User
         labels = {
@@ -24,8 +26,8 @@ class ChangeUserDetailsForm(ModelForm):
             # Translators: Error message at the register form when the email is already used by anither profile
 
             if not self.instance.check_password(cleaned_data['current_password']):
-                self.add_error('current_password', _('Current password does not match'))            
-            
+                self.add_error('current_password', _('Current password does not match'))
+
             if User.objects.exclude(id=self.instance.id).filter(email=cleaned_data['email']).exists():
                 self.add_error('email', _('Email is already in use.'))
 
@@ -35,9 +37,9 @@ class ChangeUserDetailsForm(ModelForm):
         except:
             if len(self.errors)<=0:
                 self.add_error(None, _('One or more fields have an invalid value.'))
-            
+
         try:
-            
+
             name = cleaned_data['name']
 
             first_name = name.split(' ')[0].strip()
@@ -52,7 +54,7 @@ class ChangeUserDetailsForm(ModelForm):
         return cleaned_data
 
 class ChangeUserPasswordForm(ModelForm):
-    
+
     # Translators: Labels on the change pasword from
     current_password = CharField(required=True, label=_('Current Password'), widget=PasswordInput())
     new_password = CharField(required=True, label=_('New Password'), widget=PasswordInput())
@@ -61,7 +63,7 @@ class ChangeUserPasswordForm(ModelForm):
     class Meta:
         model = User
         fields = ['current_password','new_password', 'confirm_new_password']
-    
+
     def clean(self):
         cleaned_data = super(ChangeUserPasswordForm, self).clean()
         # Translators: Error message at the change password form when the two new password fields don't match
@@ -69,31 +71,31 @@ class ChangeUserPasswordForm(ModelForm):
 
             new_password = cleaned_data['new_password']
             confirm_new_password = cleaned_data['confirm_new_password']
-            current_password = cleaned_data['current_password'] 
+            current_password = cleaned_data['current_password']
 
             if not self.instance.check_password(current_password):
                 self.add_error('current_password', _('Current password does not match'))
-            
+
             if new_password == current_password:
                 self.add_error('new_password', _('New password cannot be the same as de current'))
-            
+
             if new_password != confirm_new_password:
                 self.add_error('confirm_new_password', _('Password does not match or blank'))
-            
+
             return cleaned_data
         except:
             self.add_error(None, _('Password does not match or blank.'))
             return cleaned_data
     def save(self, commit=True):
-        
+
         self.instance.set_password(self.cleaned_data['new_password'])
         if commit:
             self.instance.save()
-        return self.instance            
+        return self.instance
 
 class ForgotPasswordForm(Form):
     email = EmailField(required=True, label=_('E-mail address'))
-    
+
     def clean(self):
         cleaned_data = super(ForgotPasswordForm, self).clean()
 
@@ -109,12 +111,12 @@ class ForgotPasswordForm(Form):
             self.add_error('email', _('E-mail not registered or profile inactive'))
 
         return cleaned_data
-        
+
 class LoginForm(Form):
 
     # Translators: Label at the username or email field on the login form
     email_or_username = CharField(required=True, label=_('E-mail or username'))
-    
+
     # Translators: Label at the password field on the login form
     password = CharField(required=True, label=_('Password'), widget=PasswordInput())
 
@@ -124,13 +126,13 @@ class RegisterForm(ModelForm):
     confirm_password = CharField(required=True, label=_('Confirm your password'), widget=PasswordInput())
     name = CharField(required=True, label=_('Full name'))
     # email = CharField(required=True, label=_('Your E-mail'))
-    
+
     class Meta:
         model = User
         widgets = {
             'password': PasswordInput(),
         }
-        
+
         labels = {
                     'password': _('Type your password'),
                     'email': _('Your E-mail')
@@ -139,7 +141,7 @@ class RegisterForm(ModelForm):
     def clean(self):
 
         cleaned_data = super(RegisterForm, self).clean()
-        
+
         # Translators: Error message at the register form when the two password fields don't match
         try:
             password = cleaned_data['password']
@@ -147,7 +149,7 @@ class RegisterForm(ModelForm):
 
             if password != confirm_password:
                 self.add_error('password', _('Password does not match or blank.'))
-        
+
         except:
             return cleaned_data
 
@@ -167,7 +169,7 @@ class RegisterForm(ModelForm):
             self.instance.first_name = first_name
             self.instance.last_name = last_name
             self.instance.is_active = False
-            
+
         except:
             # Translators: Error message at the register form when the name field is black or invalid
             self.add_error('name', _('Name invalid'))
@@ -176,7 +178,7 @@ class RegisterForm(ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        
+
         instance = super(RegisterForm, self).save(commit)
         instance.set_password(self.cleaned_data['password'])
         if commit:
@@ -191,6 +193,6 @@ class ResendActivationEmailForm(Form):
 
         if 'email' in cleaned_data:
             if not User.objects.filter(email=cleaned_data['email']).exists():
-                self.add_error('email', _('Email not found.'))        
-        
+                self.add_error('email', _('Email not found.'))
+
         return cleaned_data
