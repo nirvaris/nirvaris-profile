@@ -92,8 +92,8 @@ class InvitationView(View):
         form.instance.is_active = True
         form.instance.save()
 
-        messages.success(self.request, _('Your account is now created.\r\nPlease, go to the login page.'))
-        return render_to_response(self.template_name)
+        messages.success(self.request, _('Your account is now created.\r\nPlease, login.'))
+        return redirect(settings.LOGIN_URL)
 
 class InviteUserView(FormView):
     template_name = 'invite-user.html'
