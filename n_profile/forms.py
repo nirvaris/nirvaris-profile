@@ -9,7 +9,7 @@ class InviteUserForm(Form):
 
 class ChangeUserDetailsForm(ModelForm):
     current_password = CharField(required=True, label=_('Type your Password'), max_length=30, widget=PasswordInput())
-    name = CharField(required=True, label=_('Name'), max_length=200)
+    name = CharField(required=True, label=_('Full Name'), max_length=200)
 
     class Meta:
         model = User
