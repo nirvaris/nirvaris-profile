@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
@@ -23,21 +23,38 @@ from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, Logi
 # Create your views here.
 
 NV_AFTER_LOGIN_URL = 'profile-dashboard'
-LOGIN_URL = 'login'
-NV_MAX_TOKEN_DAYS = 20
-
 if hasattr(settings, 'NV_AFTER_LOGIN_URL'):
     if settings.NV_AFTER_LOGIN_URL:
         NV_AFTER_LOGIN_URL = settings.NV_AFTER_LOGIN_URL
 
+LOGIN_URL = 'login'
 if not hasattr(settings, 'LOGIN_URL'):
     LOGIN_URL = settings.LOGIN_URL
 
+NV_MAX_TOKEN_DAYS = 20
 if hasattr(settings, 'NV_MAX_TOKEN_DAYS'):
     if settings.NV_MAX_TOKEN_DAYS:
         NV_MAX_TOKEN_DAYS = settings.NV_MAX_TOKEN_DAYS
 
-class InvitationView(View):
+NV_PROFILE_BLOCK_URL = []
+if hasattr(settings, 'NV_PROFILE_BLOCK_URL'):
+    if settings.NV_PROFILE_BLOCK_URL:
+        NV_PROFILE_BLOCK_URL = settings.NV_PROFILE_BLOCK_URL
+
+class BlockUrlMixin(object):
+
+    def dispatch(self, request, *args, **kwargs):
+        #pdb.set_trace()
+        user = self.request.user
+        if not user.is_superuser:
+            path_info = self.request.path_info
+            for to_block in NV_PROFILE_BLOCK_URL:
+                if to_block in path_info:
+                    raise PermissionDenied
+
+        return super(BlockUrlMixin, self).dispatch(request, *args, **kwargs)
+
+class InvitationView(BlockUrlMixin, View):
     template_name = 'invitation.html'
 
     def get(self, request, token):
@@ -95,7 +112,7 @@ class InvitationView(View):
         messages.success(self.request, _('Your account is now created.\r\nPlease, login.'))
         return redirect(settings.LOGIN_URL)
 
-class InviteUserView(FormView):
+class InviteUserView(BlockUrlMixin, FormView):
     template_name = 'invite-user.html'
     form_class = InviteUserForm
     success_url = 'invite-user'
@@ -299,7 +316,7 @@ class ActivationView(View):
 
         return render_to_response(self.template_name)
 
-class ResendActivationEmailView(FormView):
+class ResendActivationEmailView(BlockUrlMixin, FormView):
     template_name = 'resend-activation-email.html'
     form_class = ResendActivationEmailForm
     success_url = 'resend-activation-email'
@@ -335,7 +352,7 @@ class ResendActivationEmailView(FormView):
 
         return super(ResendActivationEmailView, self).form_valid(form)
 
-class RegisterView(FormView):
+class RegisterView(BlockUrlMixin, FormView):
     template_name = 'register.html'
     form_class = RegisterForm
     success_url = 'resend-activation-email'
