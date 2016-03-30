@@ -5,6 +5,7 @@ from datetime import date, timedelta
 from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import reverse
@@ -54,7 +55,7 @@ class BlockUrlMixin(object):
 
         return super(BlockUrlMixin, self).dispatch(request, *args, **kwargs)
 
-class InvitationView(BlockUrlMixin, View):
+class InvitationView(BlockUrlMixin, LoginRequiredMixin, View):
     template_name = 'invitation.html'
 
     def get(self, request, token):
@@ -131,7 +132,7 @@ class InviteUserView(BlockUrlMixin, FormView):
 
         return super(InviteUserView, self).form_valid(form)
 
-class ChangeUserDetailsView(FormView):
+class ChangeUserDetailsView(LoginRequiredMixin, FormView):
 
     template_name = 'change-user-details.html'
     form_class = ChangeUserDetailsForm
@@ -159,7 +160,7 @@ class ChangeUserDetailsView(FormView):
         form.instance = self.request.user
         return form
 
-class ChangeUserPasswordView(FormView):
+class ChangeUserPasswordView(LoginRequiredMixin, FormView):
 
     template_name = 'change-password.html'
     form_class = ChangeUserPasswordForm
@@ -218,7 +219,7 @@ class ForgotPasswordView(FormView):
 
         return super(ForgotPasswordView, self).form_valid(form)
 
-class DashboardView(TemplateView):
+class DashboardView(BlockUrlMixin, LoginRequiredMixin, TemplateView):
     template_name = 'profile-dashboard.html'
 
 class LoginView(FormView):
