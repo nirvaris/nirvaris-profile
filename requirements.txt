@@ -1,6 +1,5 @@
 git+https://github.com/nirvaris/nirvaris-theme-default
-Django==1.9
+Django==1.9.4
 django-smtp-ssl==1.0
 pycrypto==2.6.1
-selenium==2.48.0
-wheel==0.26.0
+selenium==2.53.1
