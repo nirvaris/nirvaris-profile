@@ -55,7 +55,7 @@ class BlockUrlMixin(object):
 
         return super(BlockUrlMixin, self).dispatch(request, *args, **kwargs)
 
-class InvitationView(BlockUrlMixin, LoginRequiredMixin, View):
+class InvitationView(View):
     template_name = 'invitation.html'
 
     def get(self, request, token):
