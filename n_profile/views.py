@@ -84,7 +84,7 @@ class InvitationView(View):
         try:
 
             if User.objects.filter(email=msg[1]).exists():
-                rmessages.error(self.request,_('This invitation email is already in use.\r\rContact us for more details'))
+                messages.error(self.request,_('This invitation email is already in use.\r\rContact us for more details'))
                 return render_to_response(self.template_name)
 
             form = RegisterForm(initial={'email':msg[1]});
