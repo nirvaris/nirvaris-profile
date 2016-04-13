@@ -74,18 +74,18 @@ class InvitationView(View):
 
         except:
             messages.error(request, _('There is a problem with your invitation key.\n\rContact us for more dtails.'))
-            return render_to_response(self.template_name)
+            return redirect('login')
 
         if (date.today() - dt) > timedelta (days=NV_MAX_TOKEN_DAYS):
             # Translators: Error message when the user click on the activation link or his e-mail and it has expired
             messages.info(request, _('Your invitation has expired.\n\rContact us for more details.'))
-            return render_to_response(self.template_name)
+            return return redirect('login')
 
         try:
 
             if User.objects.filter(email=msg[1]).exists():
                 messages.error(self.request,_('This invitation email is already in use.\r\rContact us for more details'))
-                return render_to_response(self.template_name)
+                return return redirect('login')
 
             form = RegisterForm(initial={'email':msg[1]});
             request_context = RequestContext(request,{'form':form})
