@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.generic.base import View, TemplateView, RedirectView
@@ -88,15 +88,17 @@ class InvitationView(View):
                 return redirect('login')
 
             form = RegisterForm(initial={'email':msg[1]});
-            request_context = RequestContext(request,{'form':form})
+            #request_context = RequestContext(request,{'form':form})
+            #return render_to_response(self.template_name, request_context)
 
-            return render_to_response(self.template_name, request_context)
+            return render(request,self.template_name, {'form':form})
 
         except:
             # Translators: Error message at the re-send activation email form when the email address is not found
             messages.error(self.request,_('Something went wrong with your invitation.\n\rPlease, contact us') % reverse('register'))
 
-        return render_to_response(self.template_name)
+        #return render_to_response(self.template_name)
+        return render(request, self.template_name)
 
     def post(self, request, token):
 
@@ -104,7 +106,8 @@ class InvitationView(View):
         form_valid = form.is_valid()
 
         if not form_valid:
-            return render_to_response(self.template_name)
+            #return render_to_response(self.template_name)
+            return render(request,self.template_name)
 
         form.save()
         form.instance.is_active = True
@@ -287,12 +290,14 @@ class ActivationView(View):
 
         except:
             messages.error(request, _('There is a problem with your activation key.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
-            return render_to_response(self.template_name)
+            #return render_to_response(self.template_name)
+            return render(request,self.template_name)
 
         if (date.today() - dt) > timedelta (days=NV_MAX_TOKEN_DAYS):
             # Translators: Error message when the user click on the activation link or his e-mail and it has expired
             messages.info(request, _('Your activation has expired.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
-            return render_to_response(self.template_name)
+            #return render_to_response(self.template_name)
+            return render(request,self.template_name)
 
         try:
 
@@ -315,7 +320,8 @@ class ActivationView(View):
             # Translators: Error message at the re-send activation email form when the email address is not found
             messages.error(self.request,_('The email address was not found.\n\rPlease, go to <a href="%s">register</a>') % reverse('register'))
 
-        return render_to_response(self.template_name)
+        #return render_to_response(self.template_name)
+        return render(request,self.template_name)
 
 class ResendActivationEmailView(BlockUrlMixin, FormView):
     template_name = 'resend-activation-email.html'
