@@ -1,0 +1,113 @@
+.gallery {
+	width: 430px;
+}
+
+.gallery-player {
+	overflow: hidden;
+	position: relative;
+	margin-bottom: 10px;
+}
+.gallery-image-description {
+	position: absolute;
+	bottom: -100%;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.7);
+	width: 100%;
+	padding: 8px 15px;
+	-webkit-transition: 0.3s ease-in-out bottom;
+	-moz-transition: 0.3s ease-in-out bottom;
+    -o-transition: 0.3s ease-in-out bottom;
+    -ms-transition: 0.3s ease-in-out bottom;
+    transition: 0.3s ease-in-out bottom;
+}
+.gallery-player:hover .gallery-image-description {
+	bottom: 0;
+}
+
+.gallery-image-info {
+	position: absolute;
+	bottom: 0;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.7);
+	padding: 8px 15px;
+	-webkit-transition: opacity 100ms linear;
+	-moz-transition: opacity 100ms linear;
+    -o-transition: opacity 100ms linear;
+    -ms-transition: opacity 100ms linear;
+    transition: opacity 100ms linear;
+}
+.gallery-player:hover .gallery-image-info {
+	opacity: 0;
+}
+
+.gallery-thumbs {
+	width: 430px;
+	overflow: hidden;
+	position: absolute;
+}
+.gallery-thumbs ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	overflow: hidden;
+	display: inline-flex;
+	position: relative;
+	-webkit-transition: 0.3s ease-in-out left;
+	-moz-transition: 0.3s ease-in-out left;
+    -o-transition: 0.3s ease-in-out left;
+    -ms-transition: 0.3s ease-in-out left;
+    transition: 0.3s ease-in-out left;
+}
+.gallery-thumb {
+	opacity: .5;
+	height: 80px;
+	width: 80px;
+	cursor: pointer;
+	display: table-cell;
+	margin-right: 10px;
+	position: relative;
+	-webkit-transition: opacity 100ms linear;
+	-moz-transition: opacity 100ms linear;
+    -o-transition: opacity 100ms linear;
+    -ms-transition: opacity 100ms linear;
+    transition: opacity 100ms linear;
+}
+.gallery-thumb:first-child {
+	margin-left: 10px;
+}
+.gallery-thumb.active,
+.gallery-thumb:hover {
+	opacity: 1;
+}
+.gallery-thumb.active div {
+    height: 100%;
+	width: 100%;
+    position: absolute;
+	border: 2px solid #f20016;
+}
+.gallery-scroll-left-button {
+	height: 80px;
+	width: 30px;
+	background: #ccc;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 999;
+	cursor: pointer;
+	background-color: #000;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.gallery-scroll-right-button {
+	height: 80px;
+	width: 30px;
+	background: #ccc;
+    top: 0;
+    right: 0;
+    position: absolute;
+    z-index: 999;
+	cursor: pointer;
+	background-color: #000;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
