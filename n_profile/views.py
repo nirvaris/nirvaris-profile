@@ -23,6 +23,11 @@ from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, Logi
 
 # Create your views here.
 
+NV_ADMIN_GROUP = ''
+if hasattr(settings, 'NV_ADMIN_GROUP'):
+    if settings.NV_ADMIN_GROUP:
+        NV_ADMIN_GROUP = settings.NV_ADMIN_GROUP
+
 NV_AFTER_LOGIN_URL = 'profile-dashboard'
 if hasattr(settings, 'NV_AFTER_LOGIN_URL'):
     if settings.NV_AFTER_LOGIN_URL:
@@ -140,6 +145,15 @@ class ChangeUserDetailsView(LoginRequiredMixin, FormView):
     template_name = 'change-user-details.html'
     form_class = ChangeUserDetailsForm
     success_url = 'change-user-details'
+
+    def dispatch(self, request, *args, **kwargs):
+        #pdb.set_trace()
+        user = self.request.user
+        if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+            if str(user.id) != self.kwargs['user_id']:
+                raise PermissionDenied
+
+        return super(TeacherDetailsView, self).dispatch(request, *args, **kwargs)
 
     def get_initial(self):
 

@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 from .commons import create_user_jack
-from ..crypto import user_activation_token
+from ..crypto import user_activation_token, user_invitation_token
 from ..views import NV_MAX_TOKEN_DAYS, NV_AFTER_LOGIN_URL
 
 class SeleniumTestCase(LiveServerTestCase):
@@ -200,6 +200,25 @@ class SeleniumTestCase(LiveServerTestCase):
 
         self.assertEqual(len(mail.outbox), 1,'It should sent an email')
 
+    def test_invite_user(self):
+
+        mail.outbox = []
+
+        browser = self.browser
+
+        browser.get(self.site_url + reverse('invite-user'))
+
+        input_name = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@id='id_email']"))
+
+        input_name.clear()
+        input_name.send_keys('new-jack@awesome.com')
+
+        submit_button = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@type='submit']"))
+
+        submit_button.click()
+
+        self.assertEqual(len(mail.outbox), 1,'It should sent an email')
+
     def test_resend_activation_email(self):
 
         mail.outbox = []
@@ -236,6 +255,22 @@ class SeleniumTestCase(LiveServerTestCase):
         browser.get(url_to_activate)
 
         self.assertFalse(User.objects.get(username='jack').is_active)
+
+    def test_invitation_link(self):
+
+        invitation_token = user_invitation_token('new-jack-d@awesome.com', date.today())
+
+        url_to_invitation =self.site_url + reverse('invitation',kwargs={'token': str(invitation_token)})
+
+        browser = self.browser
+
+        #pdb.set_trace()
+
+        browser.get(url_to_invitation)
+
+        input_email = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@id='id_email']"))
+
+        self.assertEquals(input_email.get_attribute("value"),'new-jack-d@awesome.com')
 
     def test_activation_link(self):
 

@@ -9,7 +9,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='nirvaris-profile',
-    version='0.9.15',
+    version='0.10',
     packages=['n_profile'],
     include_package_data=True,
     license='MIT License',  # example license
@@ -29,6 +29,8 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ],
 
 )
