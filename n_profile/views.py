@@ -144,8 +144,8 @@ class InviteUserView(BlockUrlMixin, FormView):
 class ChangeUserDetailsView(LoginRequiredMixin, View):
 
     template_name = 'change-user-details.html'
-    form_class = UserDetailsForm
-    success_url = 'change-user-details'
+    #form_class = UserDetailsForm
+    #success_url = 'change-user-details'
 
     def dispatch(self, request, *args, **kwargs):
         #pdb.set_trace()
