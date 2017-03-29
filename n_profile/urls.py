@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^profile-dashboard$', DashboardView.as_view(), name='profile-dashboard'),
     url(r'^logout$', LogoutView.as_view(), name='logout'),
     url(r'^change-password$',ChangeUserPasswordView.as_view(), name='change-password'),
+    url(r'^change-user-details/(?P<user_id>.*)$',ChangeUserDetailsView.as_view(), name='change-user-details'),
     url(r'^change-user-details$',ChangeUserDetailsView.as_view(), name='change-user-details'),
 
 
