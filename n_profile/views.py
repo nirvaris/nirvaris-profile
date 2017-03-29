@@ -18,7 +18,8 @@ from django.views.generic.edit import FormView
 
 from .crypto import decrypt
 from .email import send_activation_email, send_new_password, send_invitation_email
-from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, LoginForm, ForgotPasswordForm, ChangeUserPasswordForm, ChangeUserDetailsForm
+from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, LoginForm
+from .forms import UserDetailsForm, ActivateForm, UserPhotoForm, ForgotPasswordForm, ChangeUserPasswordForm
 
 
 # Create your views here.
@@ -140,10 +141,10 @@ class InviteUserView(BlockUrlMixin, FormView):
 
         return super(InviteUserView, self).form_valid(form)
 
-class ChangeUserDetailsView(LoginRequiredMixin, FormView):
+class ChangeUserDetailsView(LoginRequiredMixin, View):
 
     template_name = 'change-user-details.html'
-    form_class = ChangeUserDetailsForm
+    form_class = UserDetailsForm
     success_url = 'change-user-details'
 
     def dispatch(self, request, *args, **kwargs):
@@ -153,29 +154,201 @@ class ChangeUserDetailsView(LoginRequiredMixin, FormView):
             if str(user.id) != self.kwargs['user_id']:
                 raise PermissionDenied
 
-        return super(TeacherDetailsView, self).dispatch(request, *args, **kwargs)
+        return super(ChangeUserDetailsView, self).dispatch(request, *args, **kwargs)
 
-    def get_initial(self):
+    def get(self, request, user_id):
+        #pdb.set_trace()
 
-        initial = super(ChangeUserDetailsView, self).get_initial()
+        form_details = self._get_user_details_form(user_id)
 
-        initial['email'] = self.request.user.email
-        initial['username'] = self.request.user.username
-        initial['name'] = self.request.user.get_full_name()
+        form_activate = self._get_user_activate_form(user_id)
 
-        return initial
+        data_context = self._get_context_data(user_id)
 
-    def form_valid(self, form):
+        data_context['form_details'] = form_details
+        data_context['form_activate'] = form_activate
+        data_context['form_photo'] = UserPhotoForm()
 
-        form.save()
-        messages.success(self.request,_('New details where saved'))
+        #request_context = RequestContext(request, data_context)
+        #return render_to_response(self.template_name, request_context)
+        return render(request,self.template_name, data_context)
 
-        return super(ChangeUserDetailsView, self).form_valid(form)
+    def post(self, request, user_id):
 
-    def get_form(self):
-        form = super(ChangeUserDetailsView, self).get_form()
-        form.instance = self.request.user
-        return form
+        action = request.POST['action']
+
+        if action == 'form_details':
+            form_details = UserDetailsForm(request.POST)
+            form_valid = form_details.is_valid()
+
+            if form_valid:
+                if form_details.cleaned_data['id']:
+                    edited_user = User.objects.get(id=form_details.cleaned_data['id'])
+                    edited_user.first_name= form_details.cleaned_data['first_name']
+                    edited_user.last_name = form_details.cleaned_data['last_name']
+                    edited_user.email = form_details.cleaned_data['email']
+                else:
+                    edited_user = edited_user.save(commit=False)
+
+                if not edited_user.user_id:
+                    edited_user.user_id = user_id
+
+                edited_user.save()
+                messages.success(self.request, _('User\'s details were saved!!'))
+
+            form_activate = self._get_user_details_form(user_id)
+
+            data_context = self._get_context_data(user_id)
+            data_context['form_details'] = form_details
+            data_context['form_activate'] = form_activate
+            data_context['form_photo'] = UserPhotoForm()
+
+            #request_context = RequestContext(request,data_context)
+            #return render_to_response(self.template_name, request_context)
+            return render(request,self.template_name,data_context)
+
+        if action == 'form_activate':
+
+            if request.user.id==user_id:
+                form_details = self._get_user_details_form(user_id)
+                form_activate = self._get_user_activate_form(user_id)
+
+                data_context = self._get_context_data(user_id)
+                data_context['form_details'] = form_details
+                data_context['form_activate'] = form_activate
+                data_context['form_photo'] = UserPhotoForm()
+                messages.error(self.request, _('Oooops! You cannot change your own permissions!'))
+
+                #request_context = RequestContext(request,data_context)
+                #return render_to_response(self.template_name, request_context)
+                return render(request,self.template_name,data_context)
+
+
+            form_activate = UserActivateForm(self.request.POST)
+            form_valid = form_activate.is_valid()
+
+            if form_valid:
+                user = User.objects.get(id=user_id)
+                user.is_active = form_activate.cleaned_data['is_active']
+
+                group = Group.objects.get(name=NV_ADMIN_GROUP)
+                if form_activate.cleaned_data['is_staff']:
+                    if not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+                        user.groups.add(group)
+                else:
+                    user.groups.remove(group)
+                #user.is_staff = form_activate.cleaned_data['is_staff']
+                user.save()
+                messages.success(self.request, _('User permisions changed!'))
+
+            form_details = self._get_user_details_form(user_id)
+            data_context = self._get_context_data(user_id)
+            data_context['form_details'] = form_details
+            data_context['form_activate'] = form_activate
+            data_context['form_photo'] = UserPhotoForm()
+
+            #request_context = RequestContext(request,data_context)
+            #return render_to_response(self.template_name, request_context)
+            return render(request,self.template_name,data_context)
+
+        if action == 'form_photo':
+
+            form_photo = TeacherPhotoForm(request.POST, request.FILES)
+            form_valid = form_photo.is_valid()
+            if form_valid:
+                teacher = Teacher.objects.get(user_id=user_id)
+                #teacher.save()
+
+                #pdb.set_trace()
+                img = Image.open(request.FILES['image_file'])
+
+                photo_name = request.FILES['image_file'].name.split('/')[-1]
+                ext = photo_name.split('.')[-1]
+
+                size = (724,763)
+                img_724 = img.copy()
+                img_724.thumbnail(size)
+                img_724_name = photo_name.replace(ext, '') + 'thumb_724.' + ext
+
+                f = BytesIO()
+                img_724.save(f, format=img.format)
+                teacher.photo.save(img_724_name,ContentFile(f.getvalue()))
+                f.close()
+
+                size = (350,350)
+                img_350 = img.copy()
+                img_350.thumbnail(size)
+                img_350_name = photo_name.replace(ext, '') + 'thumb_350.' + ext
+
+                f = BytesIO()
+                img_350.save(f, format=img.format)
+                teacher.photo_350.save(img_350_name,ContentFile(f.getvalue()))
+                f.close()
+
+                size = (40,40)
+                img_40 = img.copy()
+                img_40.thumbnail(size)
+                img_40_name = photo_name.replace(ext, '') + 'thumb_40.' + ext
+
+                f = BytesIO()
+                img_40.save(f, format=img.format)
+                teacher.photo_40.save(img_40_name,ContentFile(f.getvalue()))
+                f.close()
+
+                teacher.save()
+
+            form_details = self._get_user_details_form(user_id)
+            form_activate = self._get_user_activate_form(user_id)
+
+            data_context = self._get_context_data(user_id)
+            data_context['form_details'] = form_details
+            data_context['form_activate'] = form_activate
+            data_context['form_photo'] = UserPhotoForm()
+
+            #request_context = RequestContext(request,data_context)
+            #return render_to_response(self.template_name, request_context)
+            return render(request,self.template_name, data_context)
+
+        #request_context = RequestContext(request,{'form_teacher':form_teacher, 'form_activate_teacher':form_activate})
+        #return render_to_response(self.template_name)
+        return render(request,self.template_name)
+
+    def _get_context_data(self, user_id):
+
+        data_context = {}
+        edited_user = User.objects.get(user_id=user_id)
+        data_context['edited_user'] = edited_user
+
+        return data_context
+
+    def _get_user_details_form(self, user_id):
+
+        initial = {}
+        initial['user_id'] = user_id
+
+        if User.objects.filter(user_id=user_id).exists():
+            edited_user = User.objects.get(user_id=user_id)
+            initial['first_name'] = edited_user.first_name
+            initial['last_name'] = edited_user.last_name
+            initial['email'] = edited_user.email
+            initial['id'] = edited_user.id
+            form_details = UserDetailsForm(instance=edited_user)
+        else:
+            form_details = UserDetailsForm()
+
+        return form_details
+
+    def _get_user_activate_form(self, user_id):
+
+        edited_user = User.objects.get(id=user_id)
+
+        is_staff = user.groups.filter(name=NV_ADMIN_GROUP).exists()
+
+        initial = {'is_active':edited_user.is_active,'is_staff':is_staff}
+        form_activate = UserActivateForm(initial=initial)
+
+        return form_activate
+
 
 class ChangeUserPasswordView(LoginRequiredMixin, FormView):
 

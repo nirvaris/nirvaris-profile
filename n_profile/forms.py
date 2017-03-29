@@ -1,13 +1,13 @@
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.forms import Form, ModelForm, CharField, PasswordInput, EmailField, TextInput, HiddenInput
+from django.forms import Form, ModelForm, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
 from django.utils.translation import ugettext as _
 
 class InviteUserForm(Form):
     email = EmailField(required=True, label=_('E-mail address'))
 
-class ChangeUserDetailsForm(ModelForm):
+class UserDetailsForm(ModelForm):
     current_password = CharField(required=True, label=_('Type your Password'), max_length=30, widget=PasswordInput())
     name = CharField(required=True, label=_('Full Name'), max_length=200)
 
@@ -52,6 +52,23 @@ class ChangeUserDetailsForm(ModelForm):
             self.add_error('name', _('Name invalid'))
 
         return cleaned_data
+
+class UserPhotoForm(Form):
+    image_file = ImageField()
+
+    def clean(self):
+        cleaned_data = super(UserPhotoForm, self).clean()
+        img = cleaned_data['image_file'].image
+
+        if img.size[0]<724 or img.size[1] < 763:
+            self.add_error('image_file', _('Your image must be bigger than 724x763'))
+
+        return cleaned_data
+
+class ActivateForm(Form):
+    #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
+    is_active = BooleanField(required=False)
+    is_staff = BooleanField(required=False)
 
 class ChangeUserPasswordForm(ModelForm):
 
