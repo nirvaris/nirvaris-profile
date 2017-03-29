@@ -190,8 +190,8 @@ class ChangeUserDetailsView(LoginRequiredMixin, View):
                 else:
                     edited_user = edited_user.save(commit=False)
 
-                if not edited_user.user_id:
-                    edited_user.user_id = user_id
+                if not edited_user.id:
+                    edited_user.id = user_id
 
                 edited_user.save()
                 messages.success(self.request, _('User\'s details were saved!!'))
