@@ -11,10 +11,10 @@
 	<div class="col-md-4">
 		<form ng-non-bindable method="POST" >{% csrf_token %}
 			{{ messages|messages_style }}
-			{{ form|form_style }}
+			{{ form_details|form_style }}
 			<div class="form-group">
 				{# Translators: The save button on the change user details form. #}
-				<input class="btn btn-primary btn-lg btn-block" type="submit" value="{% trans 'Save' %}">
+				<button class="btn btn-primary btn-lg btn-block" name='action' value='form_details' type="submit">{% trans 'Save' %}</button>
 			</div>
 		</form>
 	</div>

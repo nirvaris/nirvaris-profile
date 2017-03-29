@@ -16,11 +16,11 @@ class UserDetailsForm(ModelForm):
         labels = {
                     'new_email': _('Your E-mail')
                 }
-        fields = ['current_password','name', 'email', 'username']
+        fields = ['current_password','name', 'email', 'username', 'groups']
 
     def clean(self):
 
-        cleaned_data = super(ChangeUserDetailsForm, self).clean()
+        cleaned_data = super(UserDetailsForm, self).clean()
 
         try:
             # Translators: Error message at the register form when the email is already used by anither profile
