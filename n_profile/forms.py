@@ -16,7 +16,7 @@ class UserDetailsForm(ModelForm):
         labels = {
                     'new_email': _('Your E-mail')
                 }
-        fields = ['current_password','name', 'email', 'username', 'groups']
+        fields = ['current_password','name', 'email', 'username']
 
     def clean(self):
 
