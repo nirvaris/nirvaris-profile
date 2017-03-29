@@ -256,7 +256,7 @@ class ChangeUserDetailsView(LoginRequiredMixin, View):
             form_photo = TeacherPhotoForm(request.POST, request.FILES)
             form_valid = form_photo.is_valid()
             if form_valid:
-                teacher = Teacher.objects.get(user_id=user_id)
+                teacher = User.objects.get(id=user_id)
                 #teacher.save()
 
                 #pdb.set_trace()
@@ -316,7 +316,7 @@ class ChangeUserDetailsView(LoginRequiredMixin, View):
     def _get_context_data(self, user_id):
 
         data_context = {}
-        edited_user = User.objects.get(user_id=user_id)
+        edited_user = User.objects.get(id=user_id)
         data_context['edited_user'] = edited_user
 
         return data_context
@@ -324,10 +324,10 @@ class ChangeUserDetailsView(LoginRequiredMixin, View):
     def _get_user_details_form(self, user_id):
 
         initial = {}
-        initial['user_id'] = user_id
+        initial['id'] = user_id
 
-        if User.objects.filter(user_id=user_id).exists():
-            edited_user = User.objects.get(user_id=user_id)
+        if User.objects.filter(id=user_id).exists():
+            edited_user = User.objects.get(id=user_id)
             initial['first_name'] = edited_user.first_name
             initial['last_name'] = edited_user.last_name
             initial['email'] = edited_user.email
