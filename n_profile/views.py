@@ -342,10 +342,10 @@ class ChangeUserDetailsView(LoginRequiredMixin, View):
 
         edited_user = User.objects.get(id=user_id)
 
-        is_staff = user.groups.filter(name=NV_ADMIN_GROUP).exists()
+        is_staff = edited_user.groups.filter(name=NV_ADMIN_GROUP).exists()
 
         initial = {'is_active':edited_user.is_active,'is_staff':is_staff}
-        form_activate = UserActivateForm(initial=initial)
+        form_activate = ActivateForm(initial=initial)
 
         return form_activate
 
