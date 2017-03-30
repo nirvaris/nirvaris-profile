@@ -2,8 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import url, include
 
-from .views import InviteUserView, InvitationView,RegisterView, ResendActivationEmailView, ActivationView, LoginView, DashboardView, ForgotPasswordView, LogoutView, ChangeUserPasswordView, ChangeUserDetailsView
-
+from .views import InviteUserView, InvitationView,RegisterView, ResendActivationEmailView, ActivationView, LoginView, DashboardView, ForgotPasswordView, LogoutView, ChangeUserPasswordView, UserProfileView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -17,8 +16,6 @@ urlpatterns = [
     url(r'^profile-dashboard$', DashboardView.as_view(), name='profile-dashboard'),
     url(r'^logout$', LogoutView.as_view(), name='logout'),
     url(r'^change-password$',ChangeUserPasswordView.as_view(), name='change-password'),
-    url(r'^change-user-details/(?P<user_id>.*)$',ChangeUserDetailsView.as_view(), name='change-user-details'),
-    url(r'^change-user-details$',ChangeUserDetailsView.as_view(), name='change-user-details'),
-
+    url(r'^user-profile$',UserProfileView.as_view(), name='user-profile'),
 
 ]

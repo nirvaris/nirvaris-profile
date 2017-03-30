@@ -1,3 +1,4 @@
+import pdb
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -16,7 +17,7 @@ class UserDetailsForm(ModelForm):
         labels = {
                     'new_email': _('Your E-mail')
                 }
-        fields = ['current_password','name', 'email', 'username', 'groups']
+        fields = ['current_password','name', 'email', 'username']
 
     def clean(self):
 
@@ -142,7 +143,7 @@ class RegisterForm(ModelForm):
     # Translators: Labels at the fields on the register form
     confirm_password = CharField(required=True, label=_('Confirm your password'), widget=PasswordInput())
     name = CharField(required=True, label=_('Full name'))
-    # email = CharField(required=True, label=_('Your E-mail'))
+
 
     class Meta:
         model = User
