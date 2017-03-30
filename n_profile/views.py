@@ -140,6 +140,49 @@ class InviteUserView(BlockUrlMixin, FormView):
 
         return super(InviteUserView, self).form_valid(form)
 
+class UserDetailsView(LoginRequiredMixin, View):
+    template_name = 'user-details.html'
+
+    def get(self, request, user_id):
+
+        data_context = {}
+        data_context['user_details'] = User.objects.get(id=user_id)
+        data_context['form_activate'] = ActivateForm()
+        return render(request,self.template_name, data_context)
+
+    def post(self, request, user_id):
+
+        form_activate = ActivateForm(self.request.POST)
+        form_valid = form_activate.is_valid()
+
+        if form_valid:
+            user = User.objects.get(id=user_id)
+            user.is_active = form_activate.cleaned_data['is_active']
+
+            group = Group.objects.get(name=NV_ADMIN_GROUP)
+            if form_activate.cleaned_data['is_staff']:
+                if not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+                    user.groups.add(group)
+            else:
+                user.groups.remove(group)
+
+            user.save()
+            messages.success(self.request, _('User permisions changed!'))
+
+        data_context = {}
+        data_context['user_details'] = User.objects.get(id=user_id)
+        data_context['form_activate'] = ActivateForm()
+        return render(request,self.template_name, data_context)
+
+class UsersListView(LoginRequiredMixin, View):
+    template_name = 'users-list.html'
+
+    def get(self, request):
+
+        data_context = {}
+        data_context['users-list'] = User.objects.all()
+        return render(request,self.template_name, data_context)
+
 class UserProfileView(LoginRequiredMixin, View):
 
     template_name = 'change-user-details.html'

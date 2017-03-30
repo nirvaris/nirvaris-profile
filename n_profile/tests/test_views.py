@@ -10,7 +10,7 @@ from django.test import TestCase, Client
 from .commons import create_user_jack, create_user_james
 from ..crypto import decrypt, user_activation_token, user_invitation_token
 from ..forms import RegisterForm, LoginForm, ResendActivationEmailForm, ForgotPasswordForm, ChangeUserPasswordForm, UserDetailsForm
-from ..views import RegisterView, InvitationView, ResendActivationEmailView, ForgotPasswordView, LoginView, ChangeUserPasswordView, UserProfileView, NV_AFTER_LOGIN_URL, NV_MAX_TOKEN_DAYS
+from ..views import RegisterView, UsersListView, UserDetailsView, InvitationView, ResendActivationEmailView, ForgotPasswordView, LoginView, ChangeUserPasswordView, UserProfileView, NV_AFTER_LOGIN_URL, NV_MAX_TOKEN_DAYS
 
 class ProfileViewsTestCase(TestCase):
 
@@ -36,6 +36,40 @@ class ProfileViewsTestCase(TestCase):
         response = c.get(reverse('login'))
 
         self.assertTrue(isinstance(response.context['user'], AnonymousUser))
+
+    def test_user_details(self):
+
+        c = self.c
+        response = c.get(reverse('user-details',kwargs={'user_id':1}))
+
+        self.assertEquals(response.status_code,302,'Not logged user shoould NOT get the page')
+
+        jack_user = create_user_jack(True)
+
+        self.assertTrue(c.login(username=jack_user.username, password='pass'),'Must login old credentials')
+
+        response = c.get(reverse('user-details',kwargs={'user_id':1}))
+
+        self.assertEqual(response.resolver_match.func.__name__, UserDetailsView.as_view().__name__)
+
+        self.assertTemplateUsed(response, 'user-details.html')
+
+    def test_users_list(self):
+
+        c = self.c
+        response = c.get(reverse('users-list'))
+
+        self.assertEquals(response.status_code,302,'Not logged user shoould NOT get the page')
+
+        jack_user = create_user_jack(True)
+
+        self.assertTrue(c.login(username=jack_user.username, password='pass'),'Must login old credentials')
+
+        response = c.get(reverse('users-list'))
+
+        self.assertEqual(response.resolver_match.func.__name__, UsersListView.as_view().__name__)
+
+        self.assertTemplateUsed(response, 'users-list.html')
 
     def test_change_user_details(self):
 
@@ -71,7 +105,6 @@ class ProfileViewsTestCase(TestCase):
             'email':'jackdetailspost@awesome.com',
             'password': 'password2',
             'action':'form_details',
-
         })
 
         self.assertEquals(response.status_code,200,'Should stay on the page as current password is wrong')
