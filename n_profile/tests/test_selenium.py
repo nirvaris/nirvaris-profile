@@ -121,7 +121,7 @@ class SeleniumTestCase(LiveServerTestCase):
 
         browser = self.browser
 
-        browser.get(self.site_url + reverse('change-user-details'))
+        browser.get(self.site_url + reverse('user-profile'))
 
         input_name = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath('//*[@id="id_name"]'))
 

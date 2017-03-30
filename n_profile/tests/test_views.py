@@ -9,8 +9,8 @@ from django.test import TestCase, Client
 
 from .commons import create_user_jack, create_user_james
 from ..crypto import decrypt, user_activation_token, user_invitation_token
-from ..forms import RegisterForm, LoginForm, ResendActivationEmailForm, ForgotPasswordForm, ChangeUserPasswordForm, ChangeUserDetailsForm
-from ..views import RegisterView, InvitationView, ResendActivationEmailView, ForgotPasswordView, LoginView, ChangeUserPasswordView, ChangeUserDetailsView, NV_AFTER_LOGIN_URL, NV_MAX_TOKEN_DAYS
+from ..forms import RegisterForm, LoginForm, ResendActivationEmailForm, ForgotPasswordForm, ChangeUserPasswordForm, UserDetailsForm
+from ..views import RegisterView, InvitationView, ResendActivationEmailView, ForgotPasswordView, LoginView, ChangeUserPasswordView, UserProfileView, NV_AFTER_LOGIN_URL, NV_MAX_TOKEN_DAYS
 
 class ProfileViewsTestCase(TestCase):
 
@@ -45,17 +45,14 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertTrue(c.login(username=jack_user.username, password='pass'),'Must login with the old credentials')
 
-        response = c.post(reverse('change-user-details'), {
+        response = c.post(reverse('user-profile'), {
             'name':'Jacky Changed Awesome Daniels',
             'username': 'jack_changed',
             'email':'jack_changed@awesome.com',
             'current_password': 'pass',
+            'action':'form_details',
 
         })
-
-        self.assertEquals(response.status_code,302,'Should redirect back')
-
-        self.assertIn(response['Location'], reverse('change-user-details'),'Should redirect to back')
 
         self.assertTrue(User.objects.filter(username='jack_changed').exists(),'User was not registered')
 
@@ -68,11 +65,12 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertTrue(c.login(username='jack_changed',password='pass'),'Must login with the new username')
 
-        response = c.post(reverse('change-user-details'), {
+        response = c.post(reverse('user-profile'), {
             'name':'Jacky Changed Awesome Daniels',
             'username': 'jack_changed2',
             'email':'jackdetailspost@awesome.com',
             'password': 'password2',
+            'action':'form_details',
 
         })
 
@@ -80,11 +78,12 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertTrue(c.login(username='jack_changed',password='pass'),'Should login with the old credentials as did not change the username')
 
-        response = c.post(reverse('change-user-details'), {
+        response = c.post(reverse('user-profile'), {
             'name':'',
             'username': '',
             'email':'',
             'password': '',
+            'action':'form_details',
 
         })
 
@@ -157,15 +156,15 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertTrue(c.login(username=jack_user.username,password='pass'),'Must login with the old credentials')
 
-        response = c.get(reverse('change-user-details'))
+        response = c.get(reverse('user-profile'))
 
         self.assertEquals(response.status_code,200,'Logged user shoould get the page')
 
-        self.assertEqual(response.resolver_match.func.__name__, ChangeUserDetailsView.as_view().__name__)
+        self.assertEqual(response.resolver_match.func.__name__, UserProfileView.as_view().__name__)
 
         self.assertTemplateUsed(response, 'change-user-details.html')
 
-        self.assertTrue(isinstance(response.context['form'], ChangeUserDetailsForm))
+        self.assertTrue(isinstance(response.context['form'], UserDetailsForm))
 
         content = str(response.content)
 
