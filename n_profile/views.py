@@ -185,7 +185,7 @@ class UsersListView(LoginRequiredMixin, View):
 
 class UserProfileView(LoginRequiredMixin, View):
 
-    template_name = 'change-user-details.html'
+    template_name = 'user-profile.html'
     #form_class = UserDetailsForm
     #success_url = 'change-user-details'
 

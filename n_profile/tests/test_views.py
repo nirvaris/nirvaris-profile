@@ -195,9 +195,9 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertEqual(response.resolver_match.func.__name__, UserProfileView.as_view().__name__)
 
-        self.assertTemplateUsed(response, 'change-user-details.html')
+        self.assertTemplateUsed(response, 'user-profile.html')
 
-        self.assertTrue(isinstance(response.context['form'], UserDetailsForm))
+        self.assertTrue(isinstance(response.context['form_details'], UserDetailsForm))
 
         content = str(response.content)
 
