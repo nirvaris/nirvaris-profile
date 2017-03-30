@@ -21,7 +21,6 @@ from .email import send_activation_email, send_new_password, send_invitation_ema
 from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, LoginForm
 from .forms import UserDetailsForm, ActivateForm, UserPhotoForm, ForgotPasswordForm, ChangeUserPasswordForm
 
-
 # Create your views here.
 
 NV_ADMIN_GROUP = ''
