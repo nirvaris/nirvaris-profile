@@ -161,16 +161,18 @@ class UserDetailsView(LoginRequiredMixin, View):
 
         user_seen = User.objects.get(id=user_id)
 
+
+        data_context = {}
+        data_context['user_details'] = user_seen
+        data_context['form_activate'] = ActivateForm(initial={'is_active':user_seen.is_active})
+
         users_groups = []
         for g in user_seen.groups.all():
             users_groups.append(g.id)
 
-        groups_form = GroupsForm(Group.objects.all(),initial = {'groups':users_groups})
-
-        data_context = {}
-        data_context['user_details'] = user_seen
-        data_context['form_activate'] = ActivateForm()
+        groups_form = GroupsForm(Group.objects.all(), initial = {'groups':users_groups})
         data_context['groups_form'] = groups_form
+
         return render(request,self.template_name, data_context)
 
     def post(self, request, user_id):
@@ -178,23 +180,48 @@ class UserDetailsView(LoginRequiredMixin, View):
         if request.user.id==user_id:
             messages.error(self.request, _('Oooops! You cannot change your own permissions!'))
             data_context = {}
-            data_context['user_details'] = User.objects.get(id=user_id)
-            data_context['form_activate'] = ActivateForm()
+            user_seen = User.objects.get(id=user_id)
+            data_context['user_details'] = user_seen
+            data_context['form_activate'] = ActivateForm(initial={'is_active':user_seen.is_active})
+            users_groups = []
+            for g in user_seen.groups.all():
+                users_groups.append(g.id)
+
+            groups_form = GroupsForm(Group.objects.all(), initial = {'groups':users_groups})
+            data_context['groups_form'] = groups_form
+
             return render(request,self.template_name, data_context)
 
-        form_activate = ActivateForm(self.request.POST)
-        form_valid = form_activate.is_valid()
+        action = request.POST['action']
 
-        if form_valid:
-            user = User.objects.get(id=user_id)
-            user.is_active = form_activate.cleaned_data['is_active']
+        if action == 'form_activation':
 
-            user.save()
-            messages.success(self.request, _('User permisions changed!'))
+            form_activate = ActivateForm(self.request.POST)
+            form_valid = form_activate.is_valid()
+
+            if form_valid:
+                user = User.objects.get(id=user_id)
+                user.is_active = form_activate.cleaned_data['is_active']
+
+                user.save()
+                messages.success(self.request, _('User permisions changed!'))
+
+        if action == 'form_groups':
+            groups_form = GroupsForm(self.request.POST)
+            pdb.set_trace()
+
 
         data_context = {}
-        data_context['user_details'] = User.objects.get(id=user_id)
-        data_context['form_activate'] = ActivateForm()
+        user_seen = User.objects.get(id=user_id)
+        data_context['user_details'] = user_seen
+        data_context['form_activate'] = ActivateForm(initial={'is_active':user_seen.is_active})
+        users_groups = []
+        for g in user_seen.groups.all():
+            users_groups.append(g.id)
+
+        groups_form = GroupsForm(Group.objects.all(), initial = {'groups':users_groups})
+        data_context['groups_form'] = groups_form
+
         return render(request,self.template_name, data_context)
 
 class UsersListView(LoginRequiredMixin, View):
