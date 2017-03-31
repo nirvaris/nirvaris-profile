@@ -217,6 +217,8 @@ class SeleniumTestCase(LiveServerTestCase):
 
         submit_button.click()
 
+        time.sleep(1)
+
         self.assertEqual(len(mail.outbox), 1,'It should sent an email')
 
     def test_resend_activation_email(self):

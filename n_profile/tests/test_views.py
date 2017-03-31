@@ -125,6 +125,38 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertTrue(c.login(username='jack_changed',password='pass'),'Should login with the old credentials as did not change the username')
 
+
+    def test_change_user_photo(self):
+
+        jack_user = create_user_jack(True)
+
+        c = self.c
+
+        self.assertTrue(c.login(username=jack_user.username, password='pass'),'Must login with the old credentials')
+
+        user = User.objects.get(username='jack')
+
+        self.assertEquals(user.first_name,'Jack','user Full Name does not match')
+        self.assertEquals(user.last_name,'Awesome Daniels','user Full Name does not match')
+        self.assertEquals(user.email,'jack@awesome.com','user Email does not match')
+
+        response = c.get(reverse('user-profile'))
+
+        content = str(response.content)
+
+        self.assertTrue(re.search(re.compile('<div class="profile-usertitle-name">' + jack_user.get_full_name() + '</div>'), content),'div Full Name does not have the correct value')
+        self.assertTrue(re.search(re.compile('<div class="profile-usertitle-email">' + jack_user.email + '</div>'), content),'div Email does not have the correct value')
+
+
+        with open('user-photo.jpg', 'rb') as data:
+            response = c.post('user-profile', {
+                'action': 'form_photo',
+                'image_file': data
+            })
+
+            self.assertEquals(response.status_code,200,'Fileuplaod ok')
+
+
     def test_change_password(self):
 
         jack_user = create_user_jack(True)

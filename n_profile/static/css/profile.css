@@ -40,6 +40,12 @@ New Profile Page
   font-weight: 800;
   margin-bottom: 7px; }
 
+.profile-usertitle-email {
+  color: #5b9bd1;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 7px; }
+
 .profile-userbuttons {
   text-align: center;
   margin-top: 10px; }

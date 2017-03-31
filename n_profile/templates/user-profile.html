@@ -7,7 +7,7 @@
 {% block head_title %}{{ profile.title }}{% endblock %}
 
 {% block head_css %}
-	<link href="{% static 'css/profile.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/profile.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -17,17 +17,22 @@
 		<!-- BEGIN PROFILE SIDEBAR -->
 		<div class="profile-sidebar">
 			<div class="portlet light profile-sidebar-portlet ">
-
-						{{ messages|messages_style }}
-						{{ form_photo|form_style }}
+						<form ng-non-bindable method="POST" >{% csrf_token %}
+							{{ messages|messages_style }}
+							{{ form_photo|form_style }}
+							<div class="form-group">
+								{# Translators: The save button on the change user details form. #}
+								<button class="btn btn-primary btn-lg btn-block" name='action' value='form_details' type="submit">{% trans 'Save' %}</button>
+							</div>
+						</form>
             <!-- SIDEBAR USERPIC -->
             <div class="profile-userpic">
                 <img src="../assets/pages/media/profile/profile_user.jpg" class="img-responsive" alt=""> </div>
             <!-- END SIDEBAR USERPIC -->
             <!-- SIDEBAR USER TITLE -->
             <div class="profile-usertitle">
-                <div class="profile-usertitle-name"> Marcus Doe {{ user.name }}  </div>
-                <div class="profile-usertitle-job"> {{ user.email }} </div>
+                <div class="profile-usertitle-name">{{ user.get_full_name }}</div>
+                <div class="profile-usertitle-email">{{ user.email }}</div>
             </div>
             <!-- END SIDEBAR USER TITLE -->
         </div>
