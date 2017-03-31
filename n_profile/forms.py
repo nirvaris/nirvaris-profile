@@ -74,9 +74,9 @@ class GroupsForm(Form):
     #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
     groups = ChoiceField(choices=(), widget=CheckboxSelectMultiple)
 
-    def __init__(self, groups, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(GroupsForm, self).__init__(*args, **kwargs)
-        self.fields['groups'] = ChoiceField(choices=[(g.id, g.name) for g in groups], widget=CheckboxSelectMultiple, label='')
+        self.fields['groups'] = ChoiceField(choices=[(str(g.id), g.name) for g in groups], widget=CheckboxSelectMultiple, label='')
 
 
 class ChangeUserPasswordForm(ModelForm):
