@@ -9,7 +9,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
@@ -28,7 +28,7 @@ from .models import UserPhoto
 
 # Create your views here.
 
-NV_ADMIN_GROUP = ''
+NV_ADMIN_GROUP = 'Nirvaris Admin'
 if hasattr(settings, 'NV_ADMIN_GROUP'):
     if settings.NV_ADMIN_GROUP:
         NV_ADMIN_GROUP = settings.NV_ADMIN_GROUP
@@ -148,14 +148,35 @@ class InviteUserView(BlockUrlMixin, FormView):
 class UserDetailsView(LoginRequiredMixin, View):
     template_name = 'user-details.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        #pdb.set_trace()
+        user = self.request.user
+        if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+            if str(user.id) != self.kwargs['user_id']:
+                raise PermissionDenied
+
+        return super(UserDetailsView, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, user_id):
 
+        user_seen = User.objects.get(id=user_id)
+
+        groups_form = GroupsForm(Group.objects.all())
+
         data_context = {}
-        data_context['user_details'] = User.objects.get(id=user_id)
+        data_context['user_details'] = user_seen
         data_context['form_activate'] = ActivateForm()
+        data_context['groups_form'] = groups_form
         return render(request,self.template_name, data_context)
 
     def post(self, request, user_id):
+
+        if request.user.id==user_id:
+            messages.error(self.request, _('Oooops! You cannot change your own permissions!'))
+            data_context = {}
+            data_context['user_details'] = User.objects.get(id=user_id)
+            data_context['form_activate'] = ActivateForm()
+            return render(request,self.template_name, data_context)
 
         form_activate = ActivateForm(self.request.POST)
         form_valid = form_activate.is_valid()
@@ -163,13 +184,6 @@ class UserDetailsView(LoginRequiredMixin, View):
         if form_valid:
             user = User.objects.get(id=user_id)
             user.is_active = form_activate.cleaned_data['is_active']
-
-            group = Group.objects.get(name=NV_ADMIN_GROUP)
-            if form_activate.cleaned_data['is_staff']:
-                if not user.groups.filter(name=NV_ADMIN_GROUP).exists():
-                    user.groups.add(group)
-            else:
-                user.groups.remove(group)
 
             user.save()
             messages.success(self.request, _('User permisions changed!'))
