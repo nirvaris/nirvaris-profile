@@ -2,9 +2,33 @@
 {% load i18n %}
 {% load theme_form_tags %}
 {% load theme_messages_tags %}
+{% load staticfiles %}
 
 {% block head_title %}{{ profile.title }}{% endblock %}
 
+{% block head_css %}
+	<link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<h1>Boooo!!!</h1>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Username</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users_list %}
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
