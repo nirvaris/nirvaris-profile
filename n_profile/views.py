@@ -1,6 +1,9 @@
 import pdb
 
 from datetime import date, timedelta
+from io import BytesIO
+
+from PIL import Image
 
 from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
@@ -8,6 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError, PermissionDenied
+from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -19,7 +23,8 @@ from django.views.generic.edit import FormView
 from .crypto import decrypt
 from .email import send_activation_email, send_new_password, send_invitation_email
 from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, LoginForm
-from .forms import UserDetailsForm, ActivateForm, UserPhotoForm, ForgotPasswordForm, ChangeUserPasswordForm
+from .forms import UserDetailsForm, ActivateForm, UserPhotoForm, ForgotPasswordForm, ChangeUserPasswordForm, GroupsForm
+from .models import UserPhoto
 
 # Create your views here.
 
@@ -156,7 +161,11 @@ class UserDetailsView(LoginRequiredMixin, View):
 
         user_seen = User.objects.get(id=user_id)
 
-        groups_form = GroupsForm(Group.objects.all())
+        users_groups = []
+        for g in user_seen.groups.all():
+            users_groups.append(g.id)
+
+        groups_form = GroupsForm(Group.objects.all(),initial = {'groups':users_groups})
 
         data_context = {}
         data_context['user_details'] = user_seen
@@ -248,7 +257,11 @@ class UserProfileView(LoginRequiredMixin, View):
             form_photo = UserPhotoForm(request.POST, request.FILES)
             form_valid = form_photo.is_valid()
             if form_valid:
-                user_photo = UserPhoto.objects.get(user=user)
+
+                if UserPhoto.objects.filter(user=user).exists():
+                    user_photo = UserPhoto.objects.get(user=user)
+                else:
+                    user_photo = UserPhoto(user=user)
 
                 #pdb.set_trace()
                 img = Image.open(request.FILES['image_file'])
@@ -288,10 +301,16 @@ class UserProfileView(LoginRequiredMixin, View):
 
                 user_photo.save()
 
-            form_details = self._get_user_details_form(user)
+            initial = {}
+            initial['email'] = user.email
+            initial['name'] = user.get_full_name()
+            initial['username'] = user.username
 
+            form_details = UserDetailsForm(instance=user, initial=initial)
+
+            data_context = {}
             data_context['form_details'] = form_details
-            data_context['form_photo'] = UserPhotoForm()
+            data_context['form_photo'] = form_photo
 
             return render(request,self.template_name, data_context)
 

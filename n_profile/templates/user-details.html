@@ -2,9 +2,59 @@
 {% load i18n %}
 {% load theme_form_tags %}
 {% load theme_messages_tags %}
+{% load staticfiles %}
 
 {% block head_title %}{{ profile.title }}{% endblock %}
 
+{% block head_css %}
+	<link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<h1>Boooo!!!</h1>
+<div class="row">
+	<div class="col-md-12">
+
+		<!-- BEGIN PROFILE SIDEBAR -->
+		<div class="profile-sidebar">
+			<div class="portlet light profile-sidebar-portlet ">
+        <!-- SIDEBAR USERPIC -->
+        <div class="profile-userpic">
+					{% if user.photo.photo_350 %}
+						<img src="{% static user.photo.photo_350.url %}" class="img-responsive" alt="">
+					{% else %}
+						<img src="{% static 'image/default-user.png' %}" class="img-responsive" alt="">
+					{% endif %}
+				</div>
+        <!-- END SIDEBAR USERPIC -->
+        <!-- SIDEBAR USER TITLE -->
+        <div class="profile-usertitle">
+          <div class="profile-usertitle-name">{{ user.get_full_name }}</div>
+          <div class="profile-usertitle-email">{{ user.email }}</div>
+        </div>
+        <!-- END SIDEBAR USER TITLE -->
+    	</div>
+		</div>
+		<!-- END BEGIN PROFILE SIDEBAR -->
+
+		<!-- BEGIN PROFILE CONTENT -->
+		<div class="profile-content">
+			<div class="row">
+				<div class="col-md-12">
+
+
+          <form ng-non-bindable method="POST" >{% csrf_token %}
+						{{ messages|messages_style }}
+						{{ groups_form|form_style }}
+						<div class="form-group">
+							{# Translators: The save button on the change user details form. #}
+							<button class="btn btn-primary btn-lg btn-block" name='action' value='form_details' type="submit">{% trans 'Save' %}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- END PROFILE CONTENT -->
+
+	</div>
+</div>
 {% endblock %}
