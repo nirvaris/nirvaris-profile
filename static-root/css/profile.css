@@ -17,8 +17,10 @@ New Profile Page
 .profile-userpic img {
   float: none;
   margin: 0 auto;
-  width: 50%;
-  height: 50%;
+  width: 150px;
+  height: 150px;
+  /*width: 50%;
+  height: 50%;*/
   -webkit-border-radius: 50% !important;
   -moz-border-radius: 50% !important;
   border-radius: 50% !important; }
@@ -37,6 +39,12 @@ New Profile Page
   text-transform: uppercase;
   color: #5b9bd1;
   font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 7px; }
+
+.profile-usertitle-email {
+  color: #5b9bd1;
+  font-size: 14px;
   font-weight: 800;
   margin-bottom: 7px; }
 
