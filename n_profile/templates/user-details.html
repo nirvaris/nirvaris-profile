@@ -41,15 +41,50 @@
 			<div class="row">
 				<div class="col-md-12">
 
+          <form id="formActiveTeacher" ng-non-bindable method="POST" class="form-horizontal">
+            <div class="form-group last">
+                <label class="col-md-3 control-label">Name</label>
+                <div class="col-md-4">
+                    <p class="form-control-static">{{ user_details.get_full_name }}</p>
+                </div>
+            </div>
+            <div class="form-group last">
+                <label class="col-md-3 control-label">Email</label>
+                <div class="col-md-4">
+                    <p class="form-control-static">{{ user_details.email }}</p>
+                </div>
+            </div>
+            <div class="form-group last">
+                <label class="col-md-3 control-label">Username</label>
+                <div class="col-md-4">
+                    <p class="form-control-static">{{ user_details.username }}</p>
+                </div>
+            </div>
+          </form>
+
+
+          <form id="formActiveTeacher" ng-non-bindable method="POST" class="form-horizontal">{% csrf_token %}
+						{{ messages|messages_style }}
+						{{ form_activate|form_style_horizontal }}
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-8">
+								{# Translators: The register button on the register form. #}
+								<button class="btn btn-default hidden" name='action' value='form_activation' type="submit">{% trans 'Save' %}</button>
+							</div>
+						</div>
+					</form>
+
 
           <form ng-non-bindable method="POST" >{% csrf_token %}
 						{{ messages|messages_style }}
 						{{ groups_form|form_style }}
 						<div class="form-group">
 							{# Translators: The save button on the change user details form. #}
-							<button class="btn btn-primary btn-lg btn-block" name='action' value='form_details' type="submit">{% trans 'Save' %}</button>
+							<button class="btn btn-primary btn-lg" name='action' value='form_groups' type="submit">{% trans 'Save' %}</button>
 						</div>
 					</form>
+
+
 				</div>
 			</div>
 		</div>
@@ -57,4 +92,20 @@
 
 	</div>
 </div>
+{% endblock %}
+
+{% block page_javascript %}
+	<script>
+		// On Document Ready
+		$(document).ready(function(){
+
+
+			// controls widgets visibility
+			$('#formActiveTeacher input[type="checkbox"]').change(function() {
+				$('button[value="form_activation"]').click();
+			});
+
+
+		});
+	</script>
 {% endblock %}
