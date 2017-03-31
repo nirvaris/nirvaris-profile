@@ -2,7 +2,7 @@ import pdb
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.forms import Form, ModelForm, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
+from django.forms import Form, ModelForm, ChoiceField, CheckboxSelectMultiple, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
 from django.utils.translation import ugettext as _
 
 class InviteUserForm(Form):
@@ -69,7 +69,15 @@ class UserPhotoForm(Form):
 class ActivateForm(Form):
     #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
     is_active = BooleanField(required=False)
-    is_staff = BooleanField(required=False)
+
+class GroupsForm(Form):
+    #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
+    groups = ChoiceField(choices=(), widget=CheckboxSelectMultiple)
+
+    def __init__(self, groups, *args, **kwargs):
+        super(GroupsForm, self).__init__(*args, **kwargs)
+        self.fields['groups'] = forms.ChoiceField(choices=[(g.id, g.name) for g in groups]
+        )
 
 class ChangeUserPasswordForm(ModelForm):
 
