@@ -23,7 +23,7 @@ from django.views.generic.edit import FormView
 from .crypto import decrypt
 from .email import send_activation_email, send_new_password, send_invitation_email
 from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, LoginForm
-from .forms import UserDetailsForm, ActivateForm, UserPhotoForm, ForgotPasswordForm, ChangeUserPasswordForm
+from .forms import UserDetailsForm, ActivateForm, UserPhotoForm, ForgotPasswordForm, ChangeUserPasswordForm, GroupsForm
 from .models import UserPhoto
 
 # Create your views here.

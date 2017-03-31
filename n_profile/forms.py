@@ -76,7 +76,7 @@ class GroupsForm(Form):
 
     def __init__(self, groups, *args, **kwargs):
         super(GroupsForm, self).__init__(*args, **kwargs)
-        self.fields['groups'] = forms.ChoiceField(choices=[(g.id, g.name) for g in groups]
+        self.fields['groups'] = ChoiceField(choices=[(g.id, g.name) for g in groups]
         )
 
 class ChangeUserPasswordForm(ModelForm):
