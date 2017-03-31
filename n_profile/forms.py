@@ -1,7 +1,7 @@
 import pdb
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.forms import Form, ModelForm, ChoiceField, CheckboxSelectMultiple, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
 from django.utils.translation import ugettext as _
 
@@ -72,11 +72,12 @@ class ActivateForm(Form):
 
 class GroupsForm(Form):
     #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
-    groups = ChoiceField(choices=(), widget=CheckboxSelectMultiple)
+    groups = ChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
 
     def __init__(self, *args, **kwargs):
         super(GroupsForm, self).__init__(*args, **kwargs)
-        self.fields['groups'] = ChoiceField(choices=[(str(g.id), g.name) for g in groups], widget=CheckboxSelectMultiple, label='')
+        
+
 
 
 class ChangeUserPasswordForm(ModelForm):

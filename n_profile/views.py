@@ -170,7 +170,7 @@ class UserDetailsView(LoginRequiredMixin, View):
         for g in user_seen.groups.all():
             users_groups.append(g.id)
 
-        groups_form = GroupsForm(Group.objects.all(), initial = {'groups':users_groups})
+        groups_form = GroupsForm(initial = {'groups':users_groups})
         data_context['groups_form'] = groups_form
 
         return render(request,self.template_name, data_context)
@@ -187,7 +187,7 @@ class UserDetailsView(LoginRequiredMixin, View):
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            groups_form = GroupsForm(Group.objects.all(), initial = {'groups':users_groups})
+            groups_form = GroupsForm(initial = {'groups':users_groups})
             data_context['groups_form'] = groups_form
 
             return render(request,self.template_name, data_context)
@@ -215,19 +215,33 @@ class UserDetailsView(LoginRequiredMixin, View):
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            groups_form = GroupsForm(Group.objects.all(), initial = {'groups':users_groups})
+            groups_form = GroupsForm(initial = {'groups':users_groups})
             data_context['groups_form'] = groups_form
 
             return render(request,self.template_name, data_context)
 
 
         if action == 'form_groups':
-            groups_form = GroupsForm(Group.objects.all(),self.request.POST)
-            pdb.set_trace()
-            data_context = {}
+
             user_seen = User.objects.get(id=user_id)
+            posted = self.request.POST.getlist('groups')
+            for group in Group.objects.all():
+                if str(group.id) in posted:
+                    user_seen.groups.add(group)
+                else:
+                    user_seen.groups.remove(group)
+
+            user_seen.save()
+
+            data_context = {}
+
             data_context['user_details'] = user_seen
             data_context['form_activate'] = ActivateForm(initial={'is_active':user_seen.is_active})
+            users_groups = []
+            for g in user_seen.groups.all():
+                users_groups.append(g.id)
+
+            groups_form = GroupsForm(initial = {'groups':users_groups})
             data_context['groups_form'] = groups_form
 
             return render(request,self.template_name, data_context)
