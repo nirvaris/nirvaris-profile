@@ -238,7 +238,7 @@ class UsersListView(LoginRequiredMixin, View):
     def get(self, request):
 
         data_context = {}
-        data_context['users-list'] = User.objects.all()
+        data_context['users_list'] = User.objects.all()
         return render(request,self.template_name, data_context)
 
 class UserProfileView(LoginRequiredMixin, View):
