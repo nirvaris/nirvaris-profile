@@ -165,7 +165,7 @@ class UserDetailsView(LoginRequiredMixin, View):
         return super(UserDetailsView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, user_id):
-
+        #pdb.set_trace()
         user_seen = User.objects.get(id=user_id)
 
         data_context = {}
