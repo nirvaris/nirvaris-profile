@@ -131,6 +131,14 @@ class InviteUserView(BlockUrlMixin, FormView):
     form_class = InviteUserForm
     success_url = 'invite-user'
 
+    def dispatch(self, request, *args, **kwargs):
+        #pdb.set_trace()
+        user = self.request.user
+        if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+                raise PermissionDenied
+
+        return super(InviteUserView, self).dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
 
         email = form.cleaned_data['email']
@@ -152,7 +160,6 @@ class UserDetailsView(LoginRequiredMixin, View):
         #pdb.set_trace()
         user = self.request.user
         if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
-            if str(user.id) != self.kwargs['user_id']:
                 raise PermissionDenied
 
         return super(UserDetailsView, self).dispatch(request, *args, **kwargs)
@@ -160,7 +167,6 @@ class UserDetailsView(LoginRequiredMixin, View):
     def get(self, request, user_id):
 
         user_seen = User.objects.get(id=user_id)
-
 
         data_context = {}
         data_context['user_details'] = user_seen
@@ -249,6 +255,14 @@ class UserDetailsView(LoginRequiredMixin, View):
 class UsersListView(LoginRequiredMixin, View):
     template_name = 'users-list.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        #pdb.set_trace()
+        user = self.request.user
+        if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+                raise PermissionDenied
+
+        return super(UsersListView, self).dispatch(request, *args, **kwargs)
+
     def get(self, request):
 
         data_context = {}
@@ -258,8 +272,6 @@ class UsersListView(LoginRequiredMixin, View):
 class UserProfileView(LoginRequiredMixin, View):
 
     template_name = 'user-profile.html'
-    #form_class = UserDetailsForm
-    #success_url = 'change-user-details'
 
     def get(self, request):
         #pdb.set_trace()

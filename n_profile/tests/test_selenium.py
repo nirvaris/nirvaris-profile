@@ -30,6 +30,34 @@ class SeleniumTestCase(LiveServerTestCase):
         cls.browser.close()
         super(SeleniumTestCase, cls).tearDownClass()
 
+    def _login_admin(self, with_email=False):
+
+        jack_user = create_user_jack(active=True,is_superuser=True)
+
+        browser = self.browser
+
+        browser.get(self.site_url + reverse('login'))
+        #pdb.set_trace()
+
+        input_login = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@id='id_email_or_username']"))
+
+        input_password = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@id='id_password']"))
+
+        input_login.clear()
+        if with_email:
+            input_login.send_keys(jack_user.email)
+        else:
+            input_login.send_keys(jack_user.username)
+
+        input_password.clear()
+        input_password.send_keys('pass')
+
+        submit_button = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@type='submit']"))
+
+        submit_button.click()
+
+        return jack_user
+
     def _login(self, with_email=False):
 
         jack_user = create_user_jack(active=True)
@@ -204,6 +232,7 @@ class SeleniumTestCase(LiveServerTestCase):
 
         mail.outbox = []
 
+        jack_user = self._login_admin()
         browser = self.browser
 
         browser.get(self.site_url + reverse('invite-user'))
