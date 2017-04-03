@@ -245,8 +245,6 @@ class SeleniumTestCase(LiveServerTestCase):
         input_name.clear()
         input_name.send_keys('new-jack@awesome.com')
 
-
-
         input_checkbox = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@id='id_groups_0']"))
         input_checkbox.click()
 
