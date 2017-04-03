@@ -2,12 +2,12 @@ import re, pdb
 
 from datetime import date, timedelta
 
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User, AnonymousUser, Group
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 
-from .commons import create_user_jack, create_user_james
+from .commons import create_user_jack, create_user_james, create_user_group
 from ..crypto import decrypt, user_activation_token, user_invitation_token
 from ..forms import RegisterForm, LoginForm, ResendActivationEmailForm, ForgotPasswordForm, ChangeUserPasswordForm, UserDetailsForm
 from ..views import RegisterView, UsersListView, UserDetailsView, InvitationView, ResendActivationEmailView, ForgotPasswordView, LoginView, ChangeUserPasswordView, UserProfileView, NV_AFTER_LOGIN_URL, NV_MAX_TOKEN_DAYS
@@ -277,7 +277,8 @@ class ProfileViewsTestCase(TestCase):
 
     def test_invitation_token(self):
 
-        invitation_token = user_invitation_token('new-jack@awesome.com', date.today())
+        g = create_user_group('Sales')
+        invitation_token = user_invitation_token('new-jack@awesome.com', date.today(),[g.id])
 
         url_to_activate = reverse('invitation',kwargs={'token': str(invitation_token)})
         c = self.c
@@ -321,9 +322,10 @@ class ProfileViewsTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 0,'It should not have sent any email')
 
         mail.outbox = []
-
+        g =create_user_group('Sales')
         response = c.post(reverse('invite-user'),{
-            'email':'new-jack@awesome.com'
+            'email':'new-jack@awesome.com',
+            'groups':g.id,
         })
         self.assertEqual(len(mail.outbox), 1,'No invitation email sent')
 
@@ -337,7 +339,7 @@ class ProfileViewsTestCase(TestCase):
         invitation_token = m.groups(1)[0]
         msg = decrypt(invitation_token).split(',')
 
-        d = msg[2].split('-')
+        d = msg[3].split('-')
         dt = date(int(d[0]), int(d[1]), int(d[2]))
 
         self.assertEqual(msg[0], 'invite')

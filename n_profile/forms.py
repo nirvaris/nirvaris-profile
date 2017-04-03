@@ -2,11 +2,14 @@ import pdb
 
 from django.conf import settings
 from django.contrib.auth.models import User, Group
-from django.forms import Form, ModelForm, ChoiceField, CheckboxSelectMultiple, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
+from django.forms import Form, ModelForm, MultipleChoiceField, CheckboxSelectMultiple, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
 from django.utils.translation import ugettext as _
 
 class InviteUserForm(Form):
     email = EmailField(required=True, label=_('E-mail address'))
+    def __init__(self, *args, **kwargs):
+        super(InviteUserForm, self).__init__(*args, **kwargs)
+        self.fields['groups'] = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
 
 class UserDetailsForm(ModelForm):
     current_password = CharField(required=True, label=_('Type your Password'), max_length=30, widget=PasswordInput())
@@ -72,11 +75,11 @@ class ActivateForm(Form):
 
 class GroupsForm(Form):
     #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
-    groups = ChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
+    #groups = ChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
 
     def __init__(self, *args, **kwargs):
         super(GroupsForm, self).__init__(*args, **kwargs)
-        
+        self.fields['groups'] = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
 
 
 

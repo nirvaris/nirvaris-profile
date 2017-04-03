@@ -2,7 +2,7 @@ import os, pdb, time
 
 from datetime import date, timedelta
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
@@ -11,7 +11,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-from .commons import create_user_jack
+from .commons import create_user_jack, create_user_group
 from ..crypto import user_activation_token, user_invitation_token
 from ..views import NV_MAX_TOKEN_DAYS, NV_AFTER_LOGIN_URL
 
@@ -233,6 +233,9 @@ class SeleniumTestCase(LiveServerTestCase):
         mail.outbox = []
 
         jack_user = self._login_admin()
+        g_sales = create_user_group('Sales')
+        g_agents = create_user_group('Agents')
+
         browser = self.browser
 
         browser.get(self.site_url + reverse('invite-user'))
@@ -241,6 +244,11 @@ class SeleniumTestCase(LiveServerTestCase):
 
         input_name.clear()
         input_name.send_keys('new-jack@awesome.com')
+
+
+
+        input_checkbox = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@id='id_groups_0']"))
+        input_checkbox.click()
 
         submit_button = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath("//input[@type='submit']"))
 
@@ -289,7 +297,8 @@ class SeleniumTestCase(LiveServerTestCase):
 
     def test_invitation_link(self):
 
-        invitation_token = user_invitation_token('new-jack-d@awesome.com', date.today())
+        g = create_user_group('Sales')
+        invitation_token = user_invitation_token('new-jack-d@awesome.com', date.today(),[g.id])
 
         url_to_invitation =self.site_url + reverse('invitation',kwargs={'token': str(invitation_token)})
 

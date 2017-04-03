@@ -8,13 +8,13 @@ from django.template.loader import render_to_string
 
 from .crypto import user_activation_token, user_invitation_token
 
-def send_invitation_email(request, email):
+def send_invitation_email(request, email,  groups):
 
     #pdb.set_trace()
 
     dic_for_context = {}
     dic_for_context['user'] = request.user
-    dic_for_context['invitation_token'] = user_invitation_token(email, date.today())
+    dic_for_context['invitation_token'] = user_invitation_token(email, date.today(), groups)
     dic_for_context['site_url'] = settings.NV_SITE_URL
 
     subject = render_to_string('email-subject-invitation.txt', dic_for_context)

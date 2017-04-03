@@ -1,4 +1,9 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+
+def create_user_group(name):
+    g = Group(name=name)
+    g.save()
+    return g
 
 def create_user_jack(active=False,is_superuser=False):
 

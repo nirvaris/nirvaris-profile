@@ -13,6 +13,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import RequestContext
@@ -73,10 +74,12 @@ class InvitationView(View):
         logout(request)
 
         try:
+            #msg = 'invite,' + email + ',' + gs + ',' + due_date.strftime("%Y-%m-%d")
+
 
             msg = decrypt(token).split(',')
-
-            d = msg[2].split('-')
+            request.session['invite_groups'] = msg[2]
+            d = msg[3].split('-')
             dt = date(int(d[0]), int(d[1]), int(d[2]))
 
             if msg[0]!='invite':
@@ -110,6 +113,7 @@ class InvitationView(View):
         #return render_to_response(self.template_name)
         return render(request, self.template_name)
 
+    @transaction.atomic
     def post(self, request, token):
 
         form = RegisterForm(request.POST)
@@ -122,6 +126,14 @@ class InvitationView(View):
         form.save()
         form.instance.is_active = True
         form.instance.save()
+
+        if request.session['invite_groups']:
+            groups = request.session['invite_groups'].split(';')
+            for g in groups:
+                if g:
+                    gr = Group.objects.get(id=int(g))
+                    form.instance.groups.add(gr)
+            form.instance.save()
 
         messages.success(self.request, _('Your account is now created.\r\nPlease, login.'))
         return redirect(settings.LOGIN_URL)
@@ -142,12 +154,13 @@ class InviteUserView(BlockUrlMixin, FormView):
     def form_valid(self, form):
 
         email = form.cleaned_data['email']
+        groups = form.cleaned_data['groups']
 
         if User.objects.filter(email=email).exists():
             messages.error(self.request, _('Email address already activated by a user.'))
             return super(InviteUserView, self).form_valid(form)
 
-        send_invitation_email(self.request,  email)
+        send_invitation_email(self.request,  email, groups)
 
         messages.success(self.request,_('We have sent the invitation email.'))
 
@@ -176,8 +189,8 @@ class UserDetailsView(LoginRequiredMixin, View):
         for g in user_seen.groups.all():
             users_groups.append(g.id)
 
-        groups_form = GroupsForm(initial = {'groups':users_groups})
-        data_context['groups_form'] = groups_form
+        form_groups = GroupsForm(initial = {'groups':users_groups})
+        data_context['form_groups'] = form_groups
 
         return render(request,self.template_name, data_context)
 
@@ -193,8 +206,8 @@ class UserDetailsView(LoginRequiredMixin, View):
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            groups_form = GroupsForm(initial = {'groups':users_groups})
-            data_context['groups_form'] = groups_form
+            form_groups = GroupsForm(initial = {'groups':users_groups})
+            data_context['form_groups'] = form_groups
 
             return render(request,self.template_name, data_context)
 
@@ -221,8 +234,8 @@ class UserDetailsView(LoginRequiredMixin, View):
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            groups_form = GroupsForm(initial = {'groups':users_groups})
-            data_context['groups_form'] = groups_form
+            form_groups = GroupsForm(initial = {'groups':users_groups})
+            data_context['form_groups'] = form_groups
 
             return render(request,self.template_name, data_context)
 
@@ -230,14 +243,15 @@ class UserDetailsView(LoginRequiredMixin, View):
         if action == 'form_groups':
 
             user_seen = User.objects.get(id=user_id)
-            posted = self.request.POST.getlist('groups')
-            for group in Group.objects.all():
-                if str(group.id) in posted:
-                    user_seen.groups.add(group)
-                else:
-                    user_seen.groups.remove(group)
+            form_groups = GroupsForm(request.POST)
+            if form_groups.is_valid():
+                for group in Group.objects.all():
+                    if str(group.id) in form_groups.cleaned_data['groups']:
+                        user_seen.groups.add(group)
+                    else:
+                        user_seen.groups.remove(group)
 
-            user_seen.save()
+                user_seen.save()
 
             data_context = {}
 
@@ -247,8 +261,8 @@ class UserDetailsView(LoginRequiredMixin, View):
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            groups_form = GroupsForm(initial = {'groups':users_groups})
-            data_context['groups_form'] = groups_form
+            form_groups = GroupsForm(initial = {'groups':users_groups})
+            data_context['form_groups'] = form_groups
 
             return render(request,self.template_name, data_context)
 

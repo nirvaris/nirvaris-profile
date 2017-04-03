@@ -77,7 +77,7 @@
 
           <form ng-non-bindable method="POST" >{% csrf_token %}
 						{{ messages|messages_style }}
-						{{ groups_form|form_style }}
+						{{ form_groups|form_style }}
 						<div class="form-group">
 							{# Translators: The save button on the change user details form. #}
 							<button class="btn btn-primary btn-lg" name='action' value='form_groups' type="submit">{% trans 'Save' %}</button>
