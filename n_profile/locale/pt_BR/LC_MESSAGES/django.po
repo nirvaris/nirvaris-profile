@@ -1,0 +1,375 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-19 13:12+0000\n"
+"PO-Revision-Date: 2017-04-19 15:56+0100\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.1\n"
+
+#: n_profile/forms.py:9 n_profile/forms.py:127 n_profile/forms.py:220
+msgid "E-mail address"
+msgstr "Endereço de Email"
+
+#: n_profile/forms.py:15
+msgid "Type your Password"
+msgstr "Digite sua Senha"
+
+#: n_profile/forms.py:16
+msgid "Full Name"
+msgstr "Nome Completo"
+
+#: n_profile/forms.py:21 n_profile/forms.py:168
+msgid "Your E-mail"
+msgstr "Seu Email"
+
+#: n_profile/forms.py:33 n_profile/forms.py:107 n_profile/views.py:403
+msgid "Current password does not match"
+msgstr "A senha não confere"
+
+#: n_profile/forms.py:36 n_profile/forms.py:188 n_profile/forms.py:191
+msgid "Email is already in use."
+msgstr "Email já cadastrado."
+
+#: n_profile/forms.py:39
+msgid "Username is already in use."
+msgstr "Nome de usuário já cadastrado."
+
+#: n_profile/forms.py:43
+msgid "One or more fields have an invalid value."
+msgstr "Alguns campos estão com valores inválidos."
+
+#. Translators: Error message at the register form when the name field is black or invalid
+#: n_profile/forms.py:56 n_profile/forms.py:205
+msgid "Name invalid"
+msgstr "Nome inválido"
+
+#: n_profile/forms.py:68
+msgid "Your image must be bigger than 724x763"
+msgstr "A image deve ser maior que 724x763"
+
+#. Translators: Labels on the change pasword from
+#: n_profile/forms.py:89
+msgid "Current Password"
+msgstr "Senha Atual"
+
+#: n_profile/forms.py:90
+msgid "New Password"
+msgstr "Nova Senha"
+
+#: n_profile/forms.py:91
+msgid "Confirm New Password"
+msgstr "Repita a Nova Senha"
+
+#: n_profile/forms.py:110
+msgid "New password cannot be the same as de current"
+msgstr "Nova senha não ser igual à atual"
+
+#: n_profile/forms.py:113
+msgid "Password does not match or blank"
+msgstr "Senha não confere ou em branco"
+
+#: n_profile/forms.py:117 n_profile/forms.py:181
+msgid "Password does not match or blank."
+msgstr "Senha não confere ou em branco."
+
+#. Translators: Error message at the forgot password form
+#: n_profile/forms.py:141 n_profile/views.py:439 n_profile/views.py:449
+msgid "E-mail not registered or profile inactive"
+msgstr "E-mail não registrado ou conta inativa"
+
+#. Translators: Label at the username or email field on the login form
+#: n_profile/forms.py:148
+msgid "E-mail or username"
+msgstr "E-mail e nome de usuário"
+
+#. Translators: Label at the password field on the login form
+#: n_profile/forms.py:151
+msgid "Password"
+msgstr "Senha"
+
+#. Translators: Labels at the fields on the register form
+#: n_profile/forms.py:156
+msgid "Confirm your password"
+msgstr "Repita a senha"
+
+#: n_profile/forms.py:157
+msgid "Full name"
+msgstr "Nome Completo"
+
+#: n_profile/forms.py:167
+msgid "Type your password"
+msgstr "Digite sua senha"
+
+#: n_profile/forms.py:226
+msgid "Email not found."
+msgstr "E-mail não encontrado."
+
+#. Translators: The change password button on the change password form.
+#: n_profile/templates/change-password.html:17
+msgid "Change password"
+msgstr "Mudar a senha"
+
+#: n_profile/templates/email-body-activation.html:17
+#: n_profile/templates/email-body-invitation.html:17
+msgid "Instructions to account activation"
+msgstr "Instruções de ativação de conta"
+
+#: n_profile/templates/email-body-activation.html:25
+#: n_profile/templates/email-body-invitation.html:25
+msgid ""
+"Your account is almost ready. To complete your activation click on the link "
+"bellow."
+msgstr "Clique no link abaixo para ativar a sua conta."
+
+#: n_profile/templates/email-body-activation.html:33
+#: n_profile/templates/email-body-invitation.html:33
+msgid "Activate your account"
+msgstr "Ative a sua conta"
+
+#: n_profile/templates/email-body-activation.html:47
+#: n_profile/templates/email-body-forgot-password.html:37
+#: n_profile/templates/email-body-invitation.html:47
+msgid "© 2015 Nirvaris, All Rights Reserved."
+msgstr "© 2015 Nirvaris, Todos os Direitos Reservados."
+
+#: n_profile/templates/email-body-activation.html:49
+#: n_profile/templates/email-body-forgot-password.html:39
+#: n_profile/templates/email-body-invitation.html:49
+msgid "Jl. Perhubungan IV/25 • Pondok Betung • Tangerang 15224  • Indonesia"
+msgstr "The Cube • Studio 5, 155 Commercial Street • E1 6jB  • London"
+
+#: n_profile/templates/email-body-forgot-password.html:17
+msgid "You have asked for your account password"
+msgstr "Você solicitou uma nova senha"
+
+#: n_profile/templates/email-body-forgot-password.html:25
+msgid "Your account password is:"
+msgstr "Sua senha é:"
+
+#: n_profile/templates/email-subject-activation.txt:1
+msgid "Nirvaris Profile Activation Email"
+msgstr "Nirvaris Email de Ativação de Conta"
+
+#: n_profile/templates/email-subject-forgot-password.txt:1
+msgid "Nirvaris Profile New Password"
+msgstr "Nirvaris Nova Senha"
+
+#: n_profile/templates/email-subject-invitation.txt:1
+msgid "You were invite to a Nirvaris profile"
+msgstr "Você foi convidado para uma conta em Nirvaris"
+
+#. Translators: The send new password button on the forget password form.
+#: n_profile/templates/forgot-password.html:17
+msgid "Send new password"
+msgstr "Enviar nova semha"
+
+#: n_profile/templates/forgot-password.html:26
+#: n_profile/templates/login.html:26 n_profile/templates/register.html:27
+msgid "Forgot Password"
+msgstr "Esqueci a Senha"
+
+#. Translators: The register button on the register form.
+#: n_profile/templates/forgot-password.html:27
+#: n_profile/templates/invitation.html:17
+#: n_profile/templates/invite-user.html:27 n_profile/templates/login.html:27
+#: n_profile/templates/register.html:17
+#: n_profile/templates/resend-activation-email.html:27
+msgid "Register"
+msgstr "Fazer o Cadastro"
+
+#: n_profile/templates/forgot-password.html:28
+#: n_profile/templates/login.html:28 n_profile/templates/register.html:28
+msgid "Re-send Activation Email"
+msgstr "Re-enviar o email de ativação"
+
+#. Translators: The re-send button on the re-send activation email form.
+#: n_profile/templates/invite-user.html:17
+msgid "Send a user invitation"
+msgstr "Enviar convite para usuário"
+
+#. Translators: The login button on the login form.
+#: n_profile/templates/invite-user.html:26 n_profile/templates/login.html:17
+#: n_profile/templates/register.html:26
+#: n_profile/templates/resend-activation-email.html:26
+msgid "Login"
+msgstr "Entrar"
+
+#. Translators: The re-send button on the re-send activation email form.
+#: n_profile/templates/resend-activation-email.html:17
+msgid "Re-Send Activation E-Mail"
+msgstr "Re-enviar E-mail de Ativação"
+
+#. Translators: The register button on the register form.
+#. Translators: The save button on the change user details form.
+#: n_profile/templates/user-details.html:72
+#: n_profile/templates/user-details.html:83
+#: n_profile/templates/user-profile.html:25
+#: n_profile/templates/user-profile.html:59
+msgid "Save"
+msgstr "Salvar"
+
+#: n_profile/views.py:86
+msgid "It is not a invitation token"
+msgstr "O token parece estar quebrado"
+
+#: n_profile/views.py:89
+msgid ""
+"There is a problem with your invitation key.\n"
+"\rContact us for more dtails."
+msgstr ""
+"Teve um problema com a sua chave de convite.\n"
+"Entre em contato com o suporte."
+
+#. Translators: Error message when the user click on the activation link or his e-mail and it has expired
+#: n_profile/views.py:94
+msgid ""
+"Your invitation has expired.\n"
+"\rContact us for more details."
+msgstr "Sei convite expirou"
+
+#: n_profile/views.py:100
+msgid "This invitation email is already in use.\r\rContact us for more details"
+msgstr "Este email já está em uso"
+
+#. Translators: Error message at the re-send activation email form when the email address is not found
+#: n_profile/views.py:111
+msgid ""
+"Something went wrong with your invitation.\n"
+"\rPlease, contact us"
+msgstr "Alguam coisa errada com seu convite."
+
+#: n_profile/views.py:138
+msgid ""
+"Your account is now created.\r\n"
+"Please, login."
+msgstr ""
+"Sua conta foi criada. \n"
+"Faça o login."
+
+#: n_profile/views.py:160
+msgid "Email address already activated by a user."
+msgstr "Endereço de email já ativado pelo usuário."
+
+#: n_profile/views.py:165
+msgid "We have sent the invitation email."
+msgstr "Um convite foi enviado para o email."
+
+#: n_profile/views.py:200
+msgid "Oooops! You cannot change your own permissions!"
+msgstr "Ooops! Você não pode mudar suas próprias permissões!"
+
+#: n_profile/views.py:227
+msgid "User permisions changed!"
+msgstr "Permissões alteradas!"
+
+#: n_profile/views.py:319
+msgid "User's details were saved!!"
+msgstr "Detalhes de usuário alterados!"
+
+#: n_profile/views.py:447
+msgid "We have sent an email with your new password"
+msgstr "Foi enviado um email com a nova senha"
+
+#: n_profile/views.py:466
+msgid "Ooops! You have to login to access this page!"
+msgstr "Ooops! Você precisa fazer login para acessar esta página!"
+
+#. Translators: Error message when logins has failed
+#: n_profile/views.py:482 n_profile/views.py:486
+msgid "Login failed. Username or password does not match."
+msgstr "Login falhou. Nome de usuário ou senha inválida."
+
+#. Translators: Error message when try to login with an NOT activated acocunt
+#: n_profile/views.py:491
+msgid "This account is not activated."
+msgstr "Esta conta não está ativa."
+
+#. Translators: Unespected error authenticating the user at the login form
+#: n_profile/views.py:498
+msgid "Something wrong with yout login."
+msgstr "Alguma coisa errada com o seu login."
+
+#: n_profile/views.py:520
+#, python-format
+msgid ""
+"There is a problem with your activation key.\n"
+"\rGo to <a href=\"%s\">Re-send the activation e-mail</a>"
+msgstr ""
+"Teve um problema com a sua chave de ativação.\n"
+"\rClique<a href=“%s”>aqui para re-enviar o e-mail</a>"
+
+#. Translators: Error message when the user click on the activation link or his e-mail and it has expired
+#: n_profile/views.py:526
+#, python-format
+msgid ""
+"Your activation has expired.\n"
+"\rGo to <a href=\"%s\">Re-send the activation e-mail</a>"
+msgstr ""
+"Sua ativação expirou.\n"
+"\rClique<a href=“%s”>aqui para re-enviar o e-mail</a>"
+
+#. Translators: Success message when the user click on the activation link on his email and his account is then activated
+#: n_profile/views.py:542
+#, python-format
+msgid ""
+"Thank you!\n"
+"\rYour account has been activated.\n"
+"\rPlease, go to <a href=\"%s\">login</a>"
+msgstr ""
+"Obrigado!\n"
+"\rSua conta foi ativada.\n"
+"\rFaça<a href=“%s”>login</a>"
+
+#: n_profile/views.py:545
+#, python-format
+msgid ""
+"Your account was already activated.\n"
+"\rPlease, go to <a href=\"%s\">login</a>"
+msgstr ""
+"Sua já está ativada.\n"
+"\rFaça<a href=“%s”>login</a>"
+
+#. Translators: Error message at the re-send activation email form when the email address is not found
+#: n_profile/views.py:549 n_profile/views.py:586
+#, python-format
+msgid ""
+"The email address was not found.\n"
+"\rPlease, go to <a href=\"%s\">register</a>"
+msgstr ""
+"Endereço de e-mail não encontrado.\n"
+"\r<a href=“%s”>registre-se</a>"
+
+#. Translators: Message at the re-send activation email form when the user is already active
+#: n_profile/views.py:578
+#, python-format
+msgid ""
+"The email address is already active.\n"
+"\rPlease, go to <a href=\"%s\">login</a>"
+msgstr ""
+"Este endereço de e-mail já está ativo.\n"
+"\rFaça <a href=“%s”>login</a>"
+
+#. Translators: Message at the re-send activation email form when the activation email is re-sent
+#: n_profile/views.py:582
+msgid "We have sent you a fresh activation email."
+msgstr "Enviamos um novo email de ativação. "
+
+#: n_profile/views.py:607
+msgid "We had problems sending you an email. Please check your email address"
+msgstr "Alguma coisa não foi bem com este endereço de email. "
+
+#: n_profile/views.py:612
+msgid "We have sent you an activation email."
+msgstr "Enviamos um email de ativação."
