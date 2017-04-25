@@ -4,4 +4,9 @@ from django.contrib import admin
 
 from .models import UserPhoto
 
-admin.site.register(UserPhoto)
+
+
+class UserPhotoAdmin(admin.ModelAdmin):
+    list_display = ('user','photo_url',)
+
+admin.site.register(UserPhoto, UserPhotoAdmin)

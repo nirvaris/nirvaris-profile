@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls import url, include
 
 from .views import InviteUserView, InvitationView, UserDetailsView, UsersListView, RegisterView, ResendActivationEmailView, ActivationView, LoginView, DashboardView, ForgotPasswordView, LogoutView, ChangeUserPasswordView, UserProfileView
@@ -19,6 +20,5 @@ urlpatterns = [
     url(r'^user-profile$',UserProfileView.as_view(), name='user-profile'),
     url(r'^users-list$',UsersListView.as_view(), name='users-list'),
     url(r'^user-details/(?P<user_id>.*)$',UserDetailsView.as_view(), name='user-details'),
-
 
 ]

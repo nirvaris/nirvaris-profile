@@ -16,3 +16,6 @@ class UserPhoto(models.Model):
     photo = models.ImageField(upload_to=user_directory_path, null=True, max_length=255)
     photo_350 = models.ImageField(upload_to=user_directory_path, null=True, max_length=255)
     photo_40 = models.ImageField(upload_to=user_directory_path, null=True, max_length=255)
+
+    def photo_url(self):
+        return self.photo.url
