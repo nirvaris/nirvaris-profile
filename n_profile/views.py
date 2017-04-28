@@ -76,7 +76,6 @@ class InvitationView(View):
         try:
             #msg = 'invite,' + email + ',' + gs + ',' + due_date.strftime("%Y-%m-%d")
 
-
             msg = decrypt(token).split(',')
             request.session['invite_groups'] = msg[2]
             d = msg[3].split('-')
@@ -137,6 +136,7 @@ class InvitationView(View):
 
         messages.success(self.request, _('Your account is now created.\r\nPlease, login.'))
         return redirect(settings.LOGIN_URL)
+
 
 class InviteUserView(BlockUrlMixin, FormView):
     template_name = 'invite-user.html'
