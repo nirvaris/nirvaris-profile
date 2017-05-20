@@ -1,8 +1,6 @@
 appdirs==1.4.3
 Django==1.10.6
 django-smtp-ssl==1.0
--e git+git@github.com:nirvaris/nirvaris-menu.git@73cf0e1dc6fef74bdf6e4e6b8e88d46bff2c87c3#egg=nirvaris_menu
--e git+git@github.com:nirvaris/nirvaris-theme-default.git@d418af41e6da38eb81dcd7e3d4dcd97b99e4036b#egg=nirvaris_theme_default
 olefile==0.44
 packaging==16.8
 Pillow==4.0.0
