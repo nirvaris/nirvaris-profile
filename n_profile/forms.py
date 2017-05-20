@@ -3,30 +3,22 @@ import pdb
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.forms import Form, ModelForm, MultipleChoiceField, CheckboxSelectMultiple, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 class InviteUserForm(Form):
     email = EmailField(required=True, label=_('E-mail address'))
 
-    class Meta:
-        labels = {
-                    'email': _('E-mail address'),
-                }
     def __init__(self, *args, **kwargs):
         super(InviteUserForm, self).__init__(*args, **kwargs)
         self.fields['groups'] = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
 
 class UserDetailsForm(ModelForm):
-    current_password = CharField(required=True, max_length=30, widget=PasswordInput())
-    name = CharField(required=True, max_length=200)
+
+    current_password = CharField(required=True, max_length=30,label=_('Type your Password'), widget=PasswordInput())
+    name = CharField(required=True,label=_('Full Name'), max_length=200)
 
     class Meta:
         model = User
-        labels = {
-                    'new_email': _('Your E-mail'),
-                    'name':_('Full Name'),
-                    'current_password':_('Type your Password')
-                }
         fields = ['current_password','name', 'email', 'username']
 
     def clean(self):

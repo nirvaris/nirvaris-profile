@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-20 11:13+0000\n"
-"PO-Revision-Date: 2017-05-20 12:14+0100\n"
+"PO-Revision-Date: 2017-05-20 12:39+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -237,7 +237,7 @@ msgstr ""
 msgid ""
 "Your invitation has expired.\n"
 "\rContact us for more details."
-msgstr "Sei convite expirou"
+msgstr "Sei convite expirou."
 
 #: n_profile/views.py:99
 msgid "This invitation email is already in use.\r\rContact us for more details"
@@ -248,7 +248,9 @@ msgstr "Este email já está em uso"
 msgid ""
 "Something went wrong with your invitation.\n"
 "\rPlease, contact us"
-msgstr "Alguam coisa errada com seu convite."
+msgstr ""
+"Alguma coisa errada com seu convite.\n"
+"Fale com o suporte"
 
 #: n_profile/views.py:137
 msgid ""
@@ -364,11 +366,11 @@ msgstr ""
 #. Translators: Message at the re-send activation email form when the activation email is re-sent
 #: n_profile/views.py:582
 msgid "We have sent you a fresh activation email."
-msgstr "Enviamos um novo email de ativação. "
+msgstr "Enviamos um novo email de ativação."
 
 #: n_profile/views.py:607
 msgid "We had problems sending you an email. Please check your email address"
-msgstr "Alguma coisa não foi bem com este endereço de email. "
+msgstr "Alguma coisa não foi bem com este endereço de email"
 
 #: n_profile/views.py:612
 msgid "We have sent you an activation email."
