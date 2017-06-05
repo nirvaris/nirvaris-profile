@@ -4,6 +4,7 @@ from datetime import date
 
 from django.conf import settings
 from django.core.mail.message import EmailMessage
+#from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from .crypto import user_activation_token, user_invitation_token
@@ -21,6 +22,7 @@ def send_invitation_email(request, email,  groups):
     template = render_to_string('email-body-invitation.html', dic_for_context)
 
     msg = EmailMessage(subject, template, settings.NV_EMAIL_FROM, [email])
+    #msg = EmailMultiAlternatives(subject, template, settings.NV_EMAIL_FROM, [email])
 
     msg.content_subtype = "html"
     msg.send()
@@ -36,7 +38,7 @@ def send_new_password(request, user, new_password):
     template = render_to_string('email-body-forgot-password.html', dic_for_context)
 
     msg = EmailMessage(subject, template, settings.NV_EMAIL_FROM, [user.email])
-
+    #msg = EmailMultiAlternatives(subject, template, settings.NV_EMAIL_FROM, [user.email])
     msg.content_subtype = "html"
     msg.send()
 

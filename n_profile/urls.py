@@ -6,7 +6,7 @@ from django.conf.urls import url, include
 from .views import InviteUserView, InvitationView, UserDetailsView, UsersListView, RegisterView, ResendActivationEmailView, ActivationView, LoginView, DashboardView, ForgotPasswordView, LogoutView, ChangeUserPasswordView, UserProfileView
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
     url(r'^register$', RegisterView.as_view(), name='register'),
     url(r'^invite-user$', InviteUserView.as_view(), name='invite-user'),
     url(r'^resend-activation-email$', ResendActivationEmailView.as_view(), name='resend-activation-email'),
