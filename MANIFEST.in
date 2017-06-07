@@ -3,4 +3,5 @@ include README.md
 recursive-include n_profile/migrations *
 recursive-include n_profile/templates *
 recursive-include n_profile/static *
+recursive-include docs n_profile/locale *
 recursive-include docs *
