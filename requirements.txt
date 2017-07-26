@@ -1,10 +1,8 @@
-appdirs==1.4.3
-Django==1.10.6
-django-smtp-ssl==1.0
+Django==1.11.3
+git+https://github.com/nirvaris/nirvaris-theme-default
+git+https://github.com/nirvaris/nirvaris-menu
 olefile==0.44
-packaging==16.8
-Pillow==4.0.0
-pycrypto==2.6.1
-pyparsing==2.2.0
-selenium==3.3.1
-six==1.10.0
+Pillow==4.2.1
+pycryptodome==3.4.6
+pytz==2017.2
+selenium==3.4.3

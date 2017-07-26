@@ -167,7 +167,8 @@ class SeleniumTestCase(LiveServerTestCase):
 
 
 
-        submit_button = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath('//*[@type="submit"]'))
+        submit_button = WebDriverWait(browser, 10).until( lambda browser: browser.find_element_by_xpath('//*[@value="form_details"]'))
+
 
         input_name.clear()
         input_name.send_keys('JackD Changed Roll')
@@ -181,9 +182,9 @@ class SeleniumTestCase(LiveServerTestCase):
         input_password.clear()
         input_password.send_keys('pass')
 
-        #pdb.set_trace()
+        pdb.set_trace()
         submit_button.click()
-        time.sleep(1)
+        time.sleep(2)
         self.assertTrue(User.objects.filter(username='jackroll').exists(),'User was not registered')
 
         cahnged_user = User.objects.get(username='jackroll')
@@ -252,7 +253,7 @@ class SeleniumTestCase(LiveServerTestCase):
 
         submit_button.click()
 
-        time.sleep(1)
+        time.sleep(2)
 
         self.assertEqual(len(mail.outbox), 1,'It should sent an email')
 
