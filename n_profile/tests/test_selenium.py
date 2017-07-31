@@ -182,7 +182,7 @@ class SeleniumTestCase(LiveServerTestCase):
         input_password.clear()
         input_password.send_keys('pass')
 
-        pdb.set_trace()
+        #pdb.set_trace()
         submit_button.click()
         time.sleep(2)
         self.assertTrue(User.objects.filter(username='jackroll').exists(),'User was not registered')

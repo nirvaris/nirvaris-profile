@@ -268,9 +268,10 @@ class UserDetailsView(LoginRequiredMixin, View):
 
             return render(request,self.template_name, data_context)
 
-class UsersListView(LoginRequiredMixin, View):
+class UsersListView(MenuPermissionsMixin, View):
     template_name = 'users-list.html'
 
+    '''
     def dispatch(self, request, *args, **kwargs):
         #pdb.set_trace()
         user = self.request.user
@@ -278,7 +279,7 @@ class UsersListView(LoginRequiredMixin, View):
                 raise PermissionDenied
 
         return super(UsersListView, self).dispatch(request, *args, **kwargs)
-
+    '''
     def get(self, request):
 
         data_context = {}

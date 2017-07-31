@@ -56,7 +56,7 @@ class ProfileViewsTestCase(TestCase):
 
         self.assertTemplateUsed(response, 'user-details.html')
 
-    def test_users_list(self):
+    def no_test_users_list(self):
 
         c = self.c
         response = c.get(reverse('users-list'))
