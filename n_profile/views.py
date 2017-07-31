@@ -21,6 +21,8 @@ from django.utils.translation import ugettext as _
 from django.views.generic.base import View, TemplateView, RedirectView
 from django.views.generic.edit import FormView
 
+from menu.mixins import MenuPermissionsMixin
+
 from .crypto import decrypt
 from .email import send_activation_email, send_new_password, send_invitation_email
 from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, LoginForm
