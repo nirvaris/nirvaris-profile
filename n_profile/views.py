@@ -22,6 +22,7 @@ from django.views.generic.base import View, TemplateView, RedirectView
 from django.views.generic.edit import FormView
 
 from menu.mixins import MenuPermissionsMixin
+from menu.permissions import is_admin
 
 from .crypto import decrypt
 from .email import send_activation_email, send_new_password, send_invitation_email
@@ -31,10 +32,6 @@ from .models import UserPhoto
 
 # Create your views here.
 
-NV_ADMIN_GROUP = 'Nirvaris Admin'
-if hasattr(settings, 'NV_ADMIN_GROUP'):
-    if settings.NV_ADMIN_GROUP:
-        NV_ADMIN_GROUP = settings.NV_ADMIN_GROUP
 
 NV_AFTER_LOGIN_URL = 'profile-dashboard'
 if hasattr(settings, 'NV_AFTER_LOGIN_URL'):
@@ -148,7 +145,7 @@ class InviteUserView(BlockUrlMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         #pdb.set_trace()
         user = self.request.user
-        if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+        if not user.is_superuser and not is_admin(user):
                 raise PermissionDenied
 
         return super(InviteUserView, self).dispatch(request, *args, **kwargs)
@@ -174,7 +171,7 @@ class UserDetailsView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         #pdb.set_trace()
         user = self.request.user
-        if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+        if not user.is_superuser and not is_admin(user):
                 raise PermissionDenied
 
         return super(UserDetailsView, self).dispatch(request, *args, **kwargs)
@@ -275,7 +272,7 @@ class UsersListView(MenuPermissionsMixin, View):
     def dispatch(self, request, *args, **kwargs):
         #pdb.set_trace()
         user = self.request.user
-        if not user.is_superuser and not user.groups.filter(name=NV_ADMIN_GROUP).exists():
+        if not user.is_superuser and not is_admin(user):
                 raise PermissionDenied
 
         return super(UsersListView, self).dispatch(request, *args, **kwargs)
