@@ -47,23 +47,6 @@ if hasattr(settings, 'NV_MAX_TOKEN_DAYS'):
     if settings.NV_MAX_TOKEN_DAYS:
         NV_MAX_TOKEN_DAYS = settings.NV_MAX_TOKEN_DAYS
 
-NV_PROFILE_BLOCK_URL = []
-if hasattr(settings, 'NV_PROFILE_BLOCK_URL'):
-    if settings.NV_PROFILE_BLOCK_URL:
-        NV_PROFILE_BLOCK_URL = settings.NV_PROFILE_BLOCK_URL
-
-class BlockUrlMixin(object):
-
-    def dispatch(self, request, *args, **kwargs):
-        #pdb.set_trace()
-        user = self.request.user
-        if not user.is_superuser:
-            path_info = self.request.path_info
-            for to_block in NV_PROFILE_BLOCK_URL:
-                if to_block in path_info:
-                    raise PermissionDenied
-
-        return super(BlockUrlMixin, self).dispatch(request, *args, **kwargs)
 
 class InvitationView(View):
     template_name = 'invitation.html'
@@ -137,7 +120,7 @@ class InvitationView(View):
         return redirect(settings.LOGIN_URL)
 
 
-class InviteUserView(BlockUrlMixin, FormView):
+class InviteUserView(LoginRequiredMixin, MenuPermissionsMixin, FormView):
     template_name = 'invite-user.html'
     form_class = InviteUserForm
     success_url = 'invite-user'
@@ -265,18 +248,9 @@ class UserDetailsView(LoginRequiredMixin, View):
 
             return render(request,self.template_name, data_context)
 
-class UsersListView(MenuPermissionsMixin, View):
+class UsersListView(LoginRequiredMixin, MenuPermissionsMixin, View):
     template_name = 'users-list.html'
 
-    '''
-    def dispatch(self, request, *args, **kwargs):
-        #pdb.set_trace()
-        user = self.request.user
-        if not user.is_superuser and not is_admin(user):
-                raise PermissionDenied
-
-        return super(UsersListView, self).dispatch(request, *args, **kwargs)
-    '''
     def get(self, request):
 
         data_context = {}
@@ -450,7 +424,7 @@ class ForgotPasswordView(FormView):
 
         return super(ForgotPasswordView, self).form_valid(form)
 
-class DashboardView(BlockUrlMixin, LoginRequiredMixin, TemplateView):
+class DashboardView(LoginRequiredMixin, MenuPermissionsMixin, TemplateView):
     template_name = 'profile-dashboard.html'
 
 class LoginView(FormView):
@@ -551,7 +525,7 @@ class ActivationView(View):
         #return render_to_response(self.template_name)
         return render(request,self.template_name)
 
-class ResendActivationEmailView(BlockUrlMixin, FormView):
+class ResendActivationEmailView(MenuPermissionsMixin, FormView):
     template_name = 'resend-activation-email.html'
     form_class = ResendActivationEmailForm
     success_url = 'resend-activation-email'
@@ -587,7 +561,7 @@ class ResendActivationEmailView(BlockUrlMixin, FormView):
 
         return super(ResendActivationEmailView, self).form_valid(form)
 
-class RegisterView(BlockUrlMixin, FormView):
+class RegisterView(MenuPermissionsMixin, FormView):
     template_name = 'register.html'
     form_class = RegisterForm
     success_url = 'resend-activation-email'
