@@ -187,7 +187,7 @@ class RegisterForm(ModelForm):
             self.add_error('email', _('Email is already in use.'))
 
         if User.objects.filter(username=cleaned_data['username']).exists():
-            self.add_error('username', _('Email is already in use.'))
+            self.add_error('username', _('Username is already in use.'))
 
         try:
             name = cleaned_data['name']
