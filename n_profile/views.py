@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.files.base import ContentFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -433,7 +433,7 @@ class LoginView(FormView):
     success_url = NV_AFTER_LOGIN_URL
 
     def get(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect(self.success_url)
 
         if 'next' in request.GET:
