@@ -152,7 +152,8 @@ class InviteUserView(LoginRequiredMixin, MenuPermissionsMixin, FormView):
                 return render(request, self.template_name, data_context)
             if action == 'GET':
                 data = get_invitation_infos(self.request, email, groups)
-                url = '{}{}'.format(data['site_url'], data['invitation_token'])
+                urll = reverse('invitation', args=[data['invitation_token']])
+                url = '{}{}'.format(data['site_url'], urll)
                 new_form = InviteUserForm(initial={'url': url, 'email': form.cleaned_data['email'], 'groups': form.cleaned_data['groups']})
                 messages.success(self.request, _('We have created the invitation link, please copy it and send '
                                                  'to your contact. <br> <b>Get the link in the field "{}" below.</b>'.format(
