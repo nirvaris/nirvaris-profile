@@ -1,25 +1,26 @@
-import pdb
-
-from django.conf import settings
 from django.contrib.auth.models import User, Group
-from django.forms import Form, ModelForm, MultipleChoiceField, CheckboxSelectMultiple, CharField, PasswordInput, EmailField, TextInput, HiddenInput, ImageField, BooleanField
+from django.forms import Form, ModelForm, MultipleChoiceField, CheckboxSelectMultiple, CharField, PasswordInput, \
+    EmailField, ImageField, BooleanField, SelectMultiple
 from django.utils.translation import ugettext_lazy as _
+
 
 class InviteUserForm(Form):
     email = EmailField(required=True, label=_('E-mail address'))
+    groups = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=SelectMultiple,
+                                 label='Groups')
+    url = CharField(max_length=2048, label=_('URL to send to user'), required=False)
 
     def __init__(self, *args, **kwargs):
         super(InviteUserForm, self).__init__(*args, **kwargs)
-        self.fields['groups'] = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
+
 
 class UserDetailsForm(ModelForm):
-
-    current_password = CharField(required=True, max_length=30,label=_('Type your Password'), widget=PasswordInput())
-    name = CharField(required=True,label=_('Full Name'), max_length=200)
+    current_password = CharField(required=True, max_length=30, label=_('Type your Password'), widget=PasswordInput())
+    name = CharField(required=True, label=_('Full Name'), max_length=200)
 
     class Meta:
         model = User
-        fields = ['current_password','name', 'email', 'username']
+        fields = ['current_password', 'name', 'email', 'username']
 
     def clean(self):
 
@@ -38,7 +39,7 @@ class UserDetailsForm(ModelForm):
                 self.add_error('username', _('Username is already in use.'))
 
         except:
-            if len(self.errors)<=0:
+            if len(self.errors) <= 0:
                 self.add_error(None, _('One or more fields have an invalid value.'))
 
         try:
@@ -56,6 +57,7 @@ class UserDetailsForm(ModelForm):
 
         return cleaned_data
 
+
 class UserPhotoForm(Form):
     image_file = ImageField()
 
@@ -63,27 +65,28 @@ class UserPhotoForm(Form):
         cleaned_data = super(UserPhotoForm, self).clean()
         img = cleaned_data['image_file'].image
 
-        if img.size[0]<724 or img.size[1] < 763:
+        if img.size[0] < 724 or img.size[1] < 763:
             self.add_error('image_file', _('Your image must be bigger than 724x763'))
 
         return cleaned_data
 
+
 class ActivateForm(Form):
-    #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
+    # user_id = forms.CharField(required=True, widget=forms.HiddenInput())
     is_active = BooleanField(required=False)
 
+
 class GroupsForm(Form):
-    #user_id = forms.CharField(required=True, widget=forms.HiddenInput())
-    #groups = ChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
+    # user_id = forms.CharField(required=True, widget=forms.HiddenInput())
+    # groups = ChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
 
     def __init__(self, *args, **kwargs):
         super(GroupsForm, self).__init__(*args, **kwargs)
-        self.fields['groups'] = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=CheckboxSelectMultiple, label='')
-
+        self.fields['groups'] = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()],
+                                                    widget=CheckboxSelectMultiple, label='')
 
 
 class ChangeUserPasswordForm(ModelForm):
-
     # Translators: Labels on the change pasword from
     current_password = CharField(required=True, label=_('Current Password'), widget=PasswordInput())
     new_password = CharField(required=True, label=_('New Password'), widget=PasswordInput())
@@ -91,7 +94,7 @@ class ChangeUserPasswordForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['current_password','new_password', 'confirm_new_password']
+        fields = ['current_password', 'new_password', 'confirm_new_password']
 
     def clean(self):
         cleaned_data = super(ChangeUserPasswordForm, self).clean()
@@ -115,12 +118,14 @@ class ChangeUserPasswordForm(ModelForm):
         except:
             self.add_error(None, _('Password does not match or blank.'))
             return cleaned_data
+
     def save(self, commit=True):
 
         self.instance.set_password(self.cleaned_data['new_password'])
         if commit:
             self.instance.save()
         return self.instance
+
 
 class ForgotPasswordForm(Form):
     email = EmailField(required=True, label=_('E-mail address'))
@@ -141,20 +146,19 @@ class ForgotPasswordForm(Form):
 
         return cleaned_data
 
-class LoginForm(Form):
 
+class LoginForm(Form):
     # Translators: Label at the username or email field on the login form
     email_or_username = CharField(required=True, label=_('E-mail or username'))
 
     # Translators: Label at the password field on the login form
     password = CharField(required=True, label=_('Password'), widget=PasswordInput())
 
-class RegisterForm(ModelForm):
 
+class RegisterForm(ModelForm):
     # Translators: Labels at the fields on the register form
     confirm_password = CharField(required=True, label=_('Confirm your password'), widget=PasswordInput())
     name = CharField(required=True, label=_('Full name'))
-
 
     class Meta:
         model = User
@@ -163,10 +167,11 @@ class RegisterForm(ModelForm):
         }
 
         labels = {
-                    'password': _('Type your password'),
-                    'email': _('Your E-mail')
-                }
+            'password': _('Type your password'),
+            'email': _('Your E-mail')
+        }
         fields = ['name', 'email', 'username', 'password', 'confirm_password']
+
     def clean(self):
 
         cleaned_data = super(RegisterForm, self).clean()
@@ -203,7 +208,6 @@ class RegisterForm(ModelForm):
             # Translators: Error message at the register form when the name field is black or invalid
             self.add_error('name', _('Name invalid'))
 
-
         return cleaned_data
 
     def save(self, commit=True):
@@ -214,9 +218,10 @@ class RegisterForm(ModelForm):
             instance.save()
         return instance
 
-class ResendActivationEmailForm(Form):
 
+class ResendActivationEmailForm(Form):
     email = EmailField(required=True, label=_('E-mail address'))
+
     def clean(self):
         cleaned_data = super(ResendActivationEmailForm, self).clean()
 

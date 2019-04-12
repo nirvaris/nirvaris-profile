@@ -25,7 +25,7 @@ from menu.mixins import MenuPermissionsMixin
 from menu.permissions import is_admin
 
 from .crypto import decrypt
-from .email import send_activation_email, send_new_password, send_invitation_email
+from .email import send_activation_email, send_new_password, send_invitation_email, get_invitation_infos
 from .forms import InviteUserForm, RegisterForm, ResendActivationEmailForm, LoginForm
 from .forms import UserDetailsForm, ActivateForm, UserPhotoForm, ForgotPasswordForm, ChangeUserPasswordForm, GroupsForm
 from .models import UserPhoto
@@ -52,25 +52,25 @@ class InvitationView(View):
     template_name = 'invitation.html'
 
     def get(self, request, token):
-        #pdb.set_trace()
+        # pdb.set_trace()
         logout(request)
 
         try:
-            #msg = 'invite,' + email + ',' + gs + ',' + due_date.strftime("%Y-%m-%d")
+            # msg = 'invite,' + email + ',' + gs + ',' + due_date.strftime("%Y-%m-%d")
 
             msg = decrypt(token).split(',')
             request.session['invite_groups'] = msg[2]
             d = msg[3].split('-')
             dt = date(int(d[0]), int(d[1]), int(d[2]))
 
-            if msg[0]!='invite':
+            if msg[0] != 'invite':
                 raise Exception(_('It is not a invitation token'))
 
         except:
             messages.error(request, _('There is a problem with your invitation key.\n\rContact us for more dtails.'))
             return redirect('login')
 
-        if (date.today() - dt) > timedelta (days=NV_MAX_TOKEN_DAYS):
+        if (date.today() - dt) > timedelta(days=NV_MAX_TOKEN_DAYS):
             # Translators: Error message when the user click on the activation link or his e-mail and it has expired
             messages.info(request, _('Your invitation has expired.\n\rContact us for more details.'))
             return redirect('login')
@@ -78,20 +78,22 @@ class InvitationView(View):
         try:
 
             if User.objects.filter(email=msg[1]).exists():
-                messages.error(self.request,_('This invitation email is already in use.\r\rContact us for more details'))
+                messages.error(self.request,
+                               _('This invitation email is already in use.\r\rContact us for more details'))
                 return redirect('login')
 
-            form = RegisterForm(initial={'email':msg[1]});
-            #request_context = RequestContext(request,{'form':form})
-            #return render_to_response(self.template_name, request_context)
+            form = RegisterForm(initial={'email': msg[1]});
+            # request_context = RequestContext(request,{'form':form})
+            # return render_to_response(self.template_name, request_context)
 
-            return render(request,self.template_name, {'form':form})
+            return render(request, self.template_name, {'form': form})
 
         except:
             # Translators: Error message at the re-send activation email form when the email address is not found
-            messages.error(self.request,_('Something went wrong with your invitation.\n\rPlease, contact us') % reverse('register'))
+            messages.error(self.request,
+                           _('Something went wrong with your invitation.\n\rPlease, contact us') % reverse('register'))
 
-        #return render_to_response(self.template_name)
+        # return render_to_response(self.template_name)
         return render(request, self.template_name)
 
     @transaction.atomic
@@ -101,8 +103,8 @@ class InvitationView(View):
         form_valid = form.is_valid()
 
         if not form_valid:
-            #return render_to_response(self.template_name)
-            return render(request,self.template_name)
+            # return render_to_response(self.template_name)
+            return render(request, self.template_name)
 
         form.save()
         form.instance.is_active = True
@@ -126,72 +128,88 @@ class InviteUserView(LoginRequiredMixin, MenuPermissionsMixin, FormView):
     success_url = 'invite-user'
 
     def dispatch(self, request, *args, **kwargs):
-        #pdb.set_trace()
+        # pdb.set_trace()
         user = self.request.user
         if not user.is_superuser and not is_admin(user):
-                raise PermissionDenied
+            raise PermissionDenied
 
         return super(InviteUserView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-
-        email = form.cleaned_data['email']
-        groups = form.cleaned_data['groups']
-
-        if User.objects.filter(email=email).exists():
-            messages.error(self.request, _('Email address already activated by a user.'))
-            return super(InviteUserView, self).form_valid(form)
-
-        send_invitation_email(self.request,  email, groups)
-
-        messages.success(self.request,_('We have sent the invitation email.'))
-
         return super(InviteUserView, self).form_valid(form)
+
+    def post(self, request):
+        form = InviteUserForm(request.POST)
+        action = request.POST['action']
+        data_context = {}
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            groups = form.cleaned_data['groups']
+            if User.objects.filter(email=email).exists():
+                messages.error(self.request, _('Email address already activated by an user.'))
+                data_context['form'] = form
+                return render(request, self.template_name, data_context)
+            if action == 'GET':
+                data = get_invitation_infos(self.request, email, groups)
+                url = '{}{}'.format(data['site_url'], data['invitation_token'])
+                new_form = InviteUserForm(initial={'url': url, 'email': form.cleaned_data['email'], 'groups': form.cleaned_data['groups']})
+                messages.success(self.request, _('We have created the invitation link, please copy it and send '
+                                                 'to your contact. <br> <b>Get the link in the field "{}" below.</b>'.format(
+                    _('URL to send to user'))))
+                data_context['form'] = new_form
+            else:
+                send_invitation_email(self.request, email, groups)
+                messages.success(self.request, _('We have sent the invitation email.'))
+                data_context['form'] = form
+
+        return render(request, self.template_name, data_context)
+
 
 class UserDetailsView(LoginRequiredMixin, View):
     template_name = 'user-details.html'
 
     def dispatch(self, request, *args, **kwargs):
-        #pdb.set_trace()
+        # pdb.set_trace()
         user = self.request.user
         if not user.is_superuser and not is_admin(user):
-                raise PermissionDenied
+            raise PermissionDenied
 
         return super(UserDetailsView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, user_id):
-        #pdb.set_trace()
+        # pdb.set_trace()
         user_seen = User.objects.get(id=user_id)
 
         data_context = {}
         data_context['user_details'] = user_seen
-        data_context['form_activate'] = ActivateForm(initial={'is_active':user_seen.is_active})
+        data_context['form_activate'] = ActivateForm(initial={'is_active': user_seen.is_active})
 
         users_groups = []
         for g in user_seen.groups.all():
             users_groups.append(g.id)
 
-        form_groups = GroupsForm(initial = {'groups':users_groups})
+        form_groups = GroupsForm(initial={'groups': users_groups})
         data_context['form_groups'] = form_groups
 
-        return render(request,self.template_name, data_context)
+        return render(request, self.template_name, data_context)
 
     def post(self, request, user_id):
 
-        if request.user.id==int(user_id):
+        if request.user.id == int(user_id):
             messages.error(self.request, _('Oooops! You cannot change your own permissions!'))
             data_context = {}
             user_seen = User.objects.get(id=user_id)
             data_context['user_details'] = user_seen
-            data_context['form_activate'] = ActivateForm(initial={'is_active':user_seen.is_active})
+            data_context['form_activate'] = ActivateForm(initial={'is_active': user_seen.is_active})
             users_groups = []
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            form_groups = GroupsForm(initial = {'groups':users_groups})
+            form_groups = GroupsForm(initial={'groups': users_groups})
             data_context['form_groups'] = form_groups
 
-            return render(request,self.template_name, data_context)
+            return render(request, self.template_name, data_context)
 
         action = request.POST['action']
 
@@ -216,11 +234,10 @@ class UserDetailsView(LoginRequiredMixin, View):
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            form_groups = GroupsForm(initial = {'groups':users_groups})
+            form_groups = GroupsForm(initial={'groups': users_groups})
             data_context['form_groups'] = form_groups
 
-            return render(request,self.template_name, data_context)
-
+            return render(request, self.template_name, data_context)
 
         if action == 'form_groups':
 
@@ -238,31 +255,31 @@ class UserDetailsView(LoginRequiredMixin, View):
             data_context = {}
 
             data_context['user_details'] = user_seen
-            data_context['form_activate'] = ActivateForm(initial={'is_active':user_seen.is_active})
+            data_context['form_activate'] = ActivateForm(initial={'is_active': user_seen.is_active})
             users_groups = []
             for g in user_seen.groups.all():
                 users_groups.append(g.id)
 
-            form_groups = GroupsForm(initial = {'groups':users_groups})
+            form_groups = GroupsForm(initial={'groups': users_groups})
             data_context['form_groups'] = form_groups
 
-            return render(request,self.template_name, data_context)
+            return render(request, self.template_name, data_context)
+
 
 class UsersListView(LoginRequiredMixin, MenuPermissionsMixin, View):
     template_name = 'users-list.html'
 
     def get(self, request):
-
         data_context = {}
         data_context['users_list'] = User.objects.all()
-        return render(request,self.template_name, data_context)
+        return render(request, self.template_name, data_context)
+
 
 class UserProfileView(LoginRequiredMixin, View):
-
     template_name = 'user-profile.html'
 
     def get(self, request):
-        #pdb.set_trace()
+        # pdb.set_trace()
         user = self.request.user
 
         initial = {}
@@ -276,7 +293,7 @@ class UserProfileView(LoginRequiredMixin, View):
         data_context['form_details'] = form_details
         data_context['form_photo'] = UserPhotoForm()
 
-        return render(request,self.template_name, data_context)
+        return render(request, self.template_name, data_context)
 
     def post(self, request):
 
@@ -299,7 +316,7 @@ class UserProfileView(LoginRequiredMixin, View):
             data_context['form_details'] = form_details
             data_context['form_photo'] = UserPhotoForm()
 
-            return render(request,self.template_name, data_context)
+            return render(request, self.template_name, data_context)
 
         if action == 'form_photo':
 
@@ -312,40 +329,40 @@ class UserProfileView(LoginRequiredMixin, View):
                 else:
                     user_photo = UserPhoto(user=user)
 
-                #pdb.set_trace()
+                # pdb.set_trace()
                 img = Image.open(request.FILES['image_file'])
 
                 photo_name = request.FILES['image_file'].name.split('/')[-1]
                 ext = photo_name.split('.')[-1]
 
-                size = (724,763)
+                size = (724, 763)
                 img_724 = img.copy()
                 img_724.thumbnail(size)
                 img_724_name = photo_name.replace(ext, '') + 'thumb_724.' + ext
 
                 f = BytesIO()
                 img_724.save(f, format=img.format)
-                user_photo.photo.save(img_724_name,ContentFile(f.getvalue()))
+                user_photo.photo.save(img_724_name, ContentFile(f.getvalue()))
                 f.close()
 
-                size = (350,350)
+                size = (350, 350)
                 img_350 = img.copy()
                 img_350.thumbnail(size)
                 img_350_name = photo_name.replace(ext, '') + 'thumb_350.' + ext
 
                 f = BytesIO()
                 img_350.save(f, format=img.format)
-                user_photo.photo_350.save(img_350_name,ContentFile(f.getvalue()))
+                user_photo.photo_350.save(img_350_name, ContentFile(f.getvalue()))
                 f.close()
 
-                size = (40,40)
+                size = (40, 40)
                 img_40 = img.copy()
                 img_40.thumbnail(size)
                 img_40_name = photo_name.replace(ext, '') + 'thumb_40.' + ext
 
                 f = BytesIO()
                 img_40.save(f, format=img.format)
-                user_photo.photo_40.save(img_40_name,ContentFile(f.getvalue()))
+                user_photo.photo_40.save(img_40_name, ContentFile(f.getvalue()))
                 f.close()
 
                 user_photo.save()
@@ -361,18 +378,18 @@ class UserProfileView(LoginRequiredMixin, View):
             data_context['form_details'] = form_details
             data_context['form_photo'] = form_photo
 
-            return render(request,self.template_name, data_context)
+            return render(request, self.template_name, data_context)
 
-        return render(request,self.template_name)
+        return render(request, self.template_name)
+
 
 class ChangeUserPasswordView(LoginRequiredMixin, FormView):
-
     template_name = 'change-password.html'
     form_class = ChangeUserPasswordForm
     success_url = 'logout'
 
     def form_valid(self, form):
-        #Translators Message at the changeing password form
+        # Translators Message at the changeing password form
         if not self.request.user.check_password(form.cleaned_data['current_password']):
             messages.error(self.request, _('Current password does not match'))
             return super(ChangeUserPasswordView, self).form_invalid(form)
@@ -387,6 +404,7 @@ class ChangeUserPasswordView(LoginRequiredMixin, FormView):
         form.instance = self.request.user
         return form
 
+
 class LogoutView(RedirectView):
     permanent = False
     url = 'login'
@@ -395,14 +413,15 @@ class LogoutView(RedirectView):
         logout(self.request)
         return super(LogoutView, self).get_redirect_url(*args, **kwargs)
 
+
 class ForgotPasswordView(FormView):
     template_name = 'forgot-password.html'
     form_class = ForgotPasswordForm
     success_url = 'forgot-password'
 
-    def get(self,request):
+    def get(self, request):
         logout(request)
-        return super(ForgotPasswordView,self).get(request)
+        return super(ForgotPasswordView, self).get(request)
 
     def form_valid(self, form):
 
@@ -410,7 +429,7 @@ class ForgotPasswordView(FormView):
         try:
             user = User.objects.get(email=form.cleaned_data['email'])
         except:
-            messages.info(self.request,_('E-mail not registered or profile inactive'))
+            messages.info(self.request, _('E-mail not registered or profile inactive'))
             return super(ForgotPasswordView, self).form_invalid(form)
 
         if user and user.is_active:
@@ -418,14 +437,16 @@ class ForgotPasswordView(FormView):
             user.set_password(password)
             user.save()
             send_new_password(self.request, user, password)
-            messages.success(self.request,_('We have sent an email with your new password'))
+            messages.success(self.request, _('We have sent an email with your new password'))
         else:
-            messages.info(self.request,_('E-mail not registered or profile inactive'))
+            messages.info(self.request, _('E-mail not registered or profile inactive'))
 
         return super(ForgotPasswordView, self).form_valid(form)
 
+
 class DashboardView(LoginRequiredMixin, MenuPermissionsMixin, TemplateView):
     template_name = 'profile-dashboard.html'
+
 
 class LoginView(FormView):
     template_name = 'login.html'
@@ -437,8 +458,8 @@ class LoginView(FormView):
             return redirect(self.success_url)
 
         if 'next' in request.GET:
-            messages.info(self.request,_('Ooops! You have to login to access this page!'))
-        return super(LoginView,self).get(request)
+            messages.info(self.request, _('Ooops! You have to login to access this page!'))
+        return super(LoginView, self).get(request)
 
     def form_valid(self, form):
 
@@ -466,7 +487,7 @@ class LoginView(FormView):
             return super(LoginView, self).form_invalid(form)
 
         try:
-            login(self.request,user)
+            login(self.request, user)
         except:
             # Translators: Unespected error authenticating the user at the login form
             messages.error(self.request, _('Something wrong with yout login.'))
@@ -477,11 +498,12 @@ class LoginView(FormView):
 
         return super(LoginView, self).form_valid(form)
 
+
 class ActivationView(View):
     template_name = 'profile-activation.html'
 
     def get(self, request, token):
-        #pdb.set_trace()
+        # pdb.set_trace()
         logout(request)
 
         try:
@@ -491,15 +513,19 @@ class ActivationView(View):
             dt = date(int(d[0]), int(d[1]), int(d[2]))
 
         except:
-            messages.error(request, _('There is a problem with your activation key.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
-            #return render_to_response(self.template_name)
-            return render(request,self.template_name)
+            messages.error(request, _(
+                'There is a problem with your activation key.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse(
+                'resend-activation-email'))
+            # return render_to_response(self.template_name)
+            return render(request, self.template_name)
 
-        if (date.today() - dt) > timedelta (days=NV_MAX_TOKEN_DAYS):
+        if (date.today() - dt) > timedelta(days=NV_MAX_TOKEN_DAYS):
             # Translators: Error message when the user click on the activation link or his e-mail and it has expired
-            messages.info(request, _('Your activation has expired.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse('resend-activation-email'))
-            #return render_to_response(self.template_name)
-            return render(request,self.template_name)
+            messages.info(request, _(
+                'Your activation has expired.\n\rGo to <a href="%s">Re-send the activation e-mail</a>') % reverse(
+                'resend-activation-email'))
+            # return render_to_response(self.template_name)
+            return render(request, self.template_name)
 
         try:
 
@@ -513,26 +539,32 @@ class ActivationView(View):
                 user.save()
                 # Translators: Success message when the user click on the activation link on his email and his account is then activated
 
-                messages.success(self.request,_('Thank you!\n\rYour account has been activated.\n\rPlease, go to <a href="%s">login</a>') % reverse('login'))
+                messages.success(self.request, _(
+                    'Thank you!\n\rYour account has been activated.\n\rPlease, go to <a href="%s">login</a>') % reverse(
+                    'login'))
             else:
 
-                messages.info(self.request,_('Your account was already activated.\n\rPlease, go to <a href="%s">login</a>') % reverse('login'))
+                messages.info(self.request, _(
+                    'Your account was already activated.\n\rPlease, go to <a href="%s">login</a>') % reverse('login'))
 
         except User.DoesNotExist:
             # Translators: Error message at the re-send activation email form when the email address is not found
-            messages.error(self.request,_('The email address was not found.\n\rPlease, go to <a href="%s">register</a>') % reverse('register'))
+            messages.error(self.request,
+                           _('The email address was not found.\n\rPlease, go to <a href="%s">register</a>') % reverse(
+                               'register'))
 
-        #return render_to_response(self.template_name)
-        return render(request,self.template_name)
+        # return render_to_response(self.template_name)
+        return render(request, self.template_name)
+
 
 class ResendActivationEmailView(MenuPermissionsMixin, FormView):
     template_name = 'resend-activation-email.html'
     form_class = ResendActivationEmailForm
     success_url = 'resend-activation-email'
 
-    def get(self,request):
+    def get(self, request):
         logout(request)
-        return super(ResendActivationEmailView,self).get(request)
+        return super(ResendActivationEmailView, self).get(request)
 
     def form_valid(self, form):
 
@@ -549,7 +581,8 @@ class ResendActivationEmailView(MenuPermissionsMixin, FormView):
 
             if user.is_active:
                 # Translators: Message at the re-send activation email form when the user is already active
-                messages.info(self.request,_('The email address is already active.\n\rPlease, go to <a href="%s">login</a>') % reverse('login'))
+                messages.info(self.request, _(
+                    'The email address is already active.\n\rPlease, go to <a href="%s">login</a>') % reverse('login'))
             else:
                 send_activation_email(self.request, user)
                 # Translators: Message at the re-send activation email form when the activation email is re-sent
@@ -557,19 +590,21 @@ class ResendActivationEmailView(MenuPermissionsMixin, FormView):
 
         except User.DoesNotExist:
             # Translators: Error message at the re-send activation email form when the email address is not found
-            messages.error(self.request,_('The email address was not found.\n\rPlease, go to <a href="%s">register</a>') % reverse('register'))
+            messages.error(self.request,
+                           _('The email address was not found.\n\rPlease, go to <a href="%s">register</a>') % reverse(
+                               'register'))
 
         return super(ResendActivationEmailView, self).form_valid(form)
+
 
 class RegisterView(MenuPermissionsMixin, FormView):
     template_name = 'register.html'
     form_class = RegisterForm
     success_url = 'resend-activation-email'
 
-
-    def get(self,request):
+    def get(self, request):
         logout(request)
-        return super(RegisterView,self).get(request)
+        return super(RegisterView, self).get(request)
 
     def form_valid(self, form):
 
