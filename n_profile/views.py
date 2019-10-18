@@ -99,12 +99,13 @@ class InvitationView(View):
     @transaction.atomic
     def post(self, request, token):
 
+        #pdb.set_trace()
         form = RegisterForm(request.POST)
         form_valid = form.is_valid()
 
         if not form_valid:
             # return render_to_response(self.template_name)
-            return render(request, self.template_name)
+            return render(request, self.template_name, {'form': form})
 
         form.save()
         form.instance.is_active = True
