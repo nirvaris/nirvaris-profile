@@ -5,13 +5,17 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class InviteUserForm(Form):
+
     email = EmailField(required=True, label=_('E-mail address'))
-    groups = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=SelectMultiple,
+    groups = MultipleChoiceField(choices=[], widget=SelectMultiple,
                                  label='Groups')
     url = CharField(max_length=2048, label=_('URL to send to user'), required=False)
 
     def __init__(self, *args, **kwargs):
+        self.groups = MultipleChoiceField(choices=[(g.id, g.name) for g in Group.objects.all()], widget=SelectMultiple,
+                                label='Groups')
         super(InviteUserForm, self).__init__(*args, **kwargs)
+        
 
 
 class UserDetailsForm(ModelForm):

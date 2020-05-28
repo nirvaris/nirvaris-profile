@@ -10,6 +10,7 @@ manage.py
 .project
 .classpath
 .studio/
+.vscode/
 
 # sublime things
 *.sublime-project
